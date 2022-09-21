@@ -14,11 +14,11 @@ with tab1:
         cols1 = st.columns(3)
         for i, col1 in enumerate(cols1):
            if i == 0:
-               inputRaag = col1.selectbox('Select the Raaga',('AhirBhairav','Bhairav','Bhairavi','Bhimpalasi','Bhoopali','Bhupeshwari','Bihag','Bilawal','Charukeshi','Keerwani','Khamaj','Malkauns','Rageshree','Shivranjini','Todi','Vibhas','Yaman'),index=8,key="inputRaag")
+               inputRaag = col1.selectbox('Select the Raaga',('AhirBhairav','Bhairav','Bhairavi','Bhimpalasi','Bhoopali','Bhupeshwari','Bihag','Bilawal','Charukeshi','Keerwani','Khamaj','Malkauns','Rageshree','Shivranjini','Todi','Vibhas','Yaman'),index=7,key="inputRaag")
            elif i == 1:
                inputPitch = col1.selectbox('Select the Pitch',('A','A#','B','C','C#','D','D#','E','F','F#','G','G#'),index=4,key="inputPitch")
            elif i == 2:
-               speed = col1.selectbox('Select the Speed',('1024th','512th','256th','128th','64th','32nd','16th','eighth','quarter','half','whole','breve','long','maxima'),index=8,key="speed")
+               speed = col1.selectbox('Select the Speed',('64th','32nd','16th','eighth','quarter','half'),index=4,key="speed")
             
         cols2 = st.columns(1)
         for i, col2 in enumerate(cols2):

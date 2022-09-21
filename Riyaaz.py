@@ -72,7 +72,7 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
     print ('includeBasicPaltas ', includeBasicPaltas)
     print ('includeMerukhand ', includeMerukhand)
     
-    divisionMap = {"quarter": "1", "eighth": "2", "16th": "4", "32nd": "8"}
+    divisionMap = {"quarter": "1", "eighth": "2", "16th": "4", "32nd": "8", "half": "0.5", "64th":"16"}
     division = divisionMap[speed]
 
     print ('Generating your paltas. Please wait...')
