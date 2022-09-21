@@ -34,21 +34,26 @@ def permutation(lst):
     return l
  
 def merukhand(basicList,patternLength):
-    ##Get a flattened permutation for the list.
-    merukhandList = [int(i) for i in [item for items in permutation(basicList) for item in items]]
-    finalList = [] 
-    for a in range(patternLength):
-        currlist = []
-        for b in merukhandList:
-           currItem = a + b
-           if currItem == patternLength:
-               currItem = 100
-           elif currItem > patternLength:
-               currItem = 100 + currItem - patternLength
-           currlist.append(currItem)
-        finalList.append(currlist)
-    return finalList
-
+    try:
+        ##Get a flattened permutation for the list.
+        merukhandList = [int(i) for i in [item for items in permutation(basicList) for item in items]]
+        finalList = [] 
+        if patternLength > 5:
+           print('Merukhand patternLength is too long')
+        for a in range(patternLength):
+            currlist = []
+            for b in merukhandList:
+               currItem = a + b
+               if currItem == patternLength:
+                   currItem = 100
+               elif currItem > patternLength:
+                   currItem = 100 + currItem - patternLength
+               currlist.append(currItem)
+            finalList.append(currlist)
+        return finalList
+    except ValueError as e:
+        print("Invalid input for Merukhand Pattern")
+        
 def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument):
     
     txtstr = ''
@@ -539,128 +544,132 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
             
 
         if includePaltas:
-            if includeLibraryPaltas:
-                PaltaList1 = pd.read_csv("ListOfPaltas.csv")
-            if inputPattern != '':
-                newPattern = []
-                for p in (inputPattern.split('\n')):
-                    newPattern.append(int(p))
-                d = {'PatlaNotation': newPattern}
-                PaltaList2 = pd.DataFrame(data=d)
-            
-            if includeLibraryPaltas and inputPattern != '':
-                PaltaList = PaltaList1.append(PaltaList2)
-            elif includeLibraryPaltas:
-                PaltaList = PaltaList1
-            elif inputPattern != '':
-                PaltaList = PaltaList2
+            try:
+                if includeLibraryPaltas:
+                    PaltaList1 = pd.read_csv("ListOfPaltas.csv")
+                if inputPattern != '':
+                    newPattern = []
+                    for p in (inputPattern.split('\n')):
+                        newPattern.append(int(p))
+                    d = {'PatlaNotation': newPattern}
+                    PaltaList2 = pd.DataFrame(data=d)
                 
-            
-            print(PaltaList)    
-
-            for palta in PaltaList['PatlaNotation']:
-                Pattern=str(palta)
-                fout.write('<measure number="'+str(MeasureNumber+1)+'"><print new-system="yes"></print>\n<direction placement="above"><direction-type><words relative-y="10.00">PATTERN:'+Pattern+' - AAROH</words></direction-type></direction>')
-                fout.write('\n<attributes><divisions>'+division+'</divisions><key><fifths>0</fifths></key><clef><sign>G</sign><line>2</line></clef></attributes>')
-                MeasureNumber +=1
-                
-                for a in range(AarohLength):
-        
-                    #Loop through pattern for Aaroh
-                    patternCnt = 0
-                    patternLen = len(Pattern)
-        
-                    for p in Pattern:
-                        currPattern = int(p) + a
-                        patternCnt +=1
-                        
-                        if currPattern == AarohLength:
-                            currPattern = 100
-                        elif currPattern > AarohLength:
-                            currPattern = 100 + currPattern - AarohLength
-                        #print(currPattern)    
-                        #Search Sequence in CurrentRaag and get the LyricalNote
-                        CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (CurrentRaag['Aaroh_Avaroh'] == "Aaroh")])['LyricalNote']).to_string(index=False)
-                        txtstr = txtstr + CurrentNote + ' '
-                        CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (RaagaTable['Scale'] == Scale)]
-        
-                        strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
-        
-                        if patternCnt == 1:
-                            fout.write (strToWrite.replace("eighth",speed).replace('<text>','<text font-size="20">'))
-                        elif patternCnt == patternLen:
-                            fout.write (strToWrite.replace("begin","end").replace("eighth",speed))
-                        else:
-                            fout.write (strToWrite.replace("begin","continue").replace("eighth",speed))
-                        fout.write('\n')
-        
-                    # Find how many notes are missing for the 8 Beat and add Z note
-                    MissingNotes = 4 - len(Pattern)%4
-                    if MissingNotes == 4:
-                        MissingNotes = 0
-        
-                    # Loop Through missing notes and add the unpitched note
-                    for m in range(MissingNotes):
-                        CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == 'Z')]
-                        strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
-                        fout.write(strToWrite.replace("begin","end").replace("eighth",speed))
-                        fout.write('\n')
-        
-                fout.write('  </measure>\n')
-                fouttxt.write(txtstr)
-                fouttxt.write('\n')
-                txtstr = ""
-                fout.write('<measure number="'+str(MeasureNumber+1)+'"><print new-system="yes"></print>\n<direction placement="above"><direction-type><words relative-y="10.00">PATTERN:'+Pattern+' - AVAROH</words></direction-type></direction>')
-                fout.write('\n<attributes><divisions>'+division+'</divisions><key><fifths>0</fifths></key><clef><sign>G</sign><line>2</line></clef></attributes>')
-                MeasureNumber +=1
-                for a in range(AvarohLength):
-        
-                    #Loop through pattern for Aaroh
-                    patternCnt = 0
-                    patternLen = len(Pattern)
+                if includeLibraryPaltas and inputPattern != '':
+                    PaltaList = PaltaList1.append(PaltaList2)
+                elif includeLibraryPaltas:
+                    PaltaList = PaltaList1
+                elif inputPattern != '':
+                    PaltaList = PaltaList2
                     
-                    for p in Pattern:
-                        currPattern = int(p) + a
-                        patternCnt +=1
-        
-                        if currPattern == AvarohLength:
-                            currPattern = 100
-                        elif currPattern > AvarohLength:
-                            currPattern = 100 + currPattern - AvarohLength
-                        #print(currPattern)    
-                        #Search Sequence in CurrentRaag and get the LyricalNote
-                        CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (CurrentRaag['Aaroh_Avaroh'] == "Avaroh")])['LyricalNote']).to_string(index=False)
-                        txtstr = txtstr + CurrentNote + ' '
-                        CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (RaagaTable['Scale'] == Scale)]
-        
-                        strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
-                        if patternCnt == 1:
-                            fout.write (strToWrite.replace("eighth",speed).replace('<text>','<text font-size="20">'))
-                        elif patternCnt == patternLen:
-                            fout.write (strToWrite.replace("begin","end").replace("eighth",speed))
-                        else:
-                            fout.write (strToWrite.replace("begin","continue").replace("eighth",speed))
+                
+                print(PaltaList)    
+    
+                for palta in PaltaList['PatlaNotation']:
+                    Pattern=str(palta)
+                    fout.write('<measure number="'+str(MeasureNumber+1)+'"><print new-system="yes"></print>\n<direction placement="above"><direction-type><words relative-y="10.00">PATTERN:'+Pattern+' - AAROH</words></direction-type></direction>')
+                    fout.write('\n<attributes><divisions>'+division+'</divisions><key><fifths>0</fifths></key><clef><sign>G</sign><line>2</line></clef></attributes>')
+                    MeasureNumber +=1
+                    
+                    for a in range(AarohLength):
+            
+                        #Loop through pattern for Aaroh
+                        patternCnt = 0
+                        patternLen = len(Pattern)
+            
+                        for p in Pattern:
+                            currPattern = int(p) + a
+                            patternCnt +=1
+                            
+                            if currPattern == AarohLength:
+                                currPattern = 100
+                            elif currPattern > AarohLength:
+                                currPattern = 100 + currPattern - AarohLength
+                            #print(currPattern)    
+                            #Search Sequence in CurrentRaag and get the LyricalNote
+                            CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (CurrentRaag['Aaroh_Avaroh'] == "Aaroh")])['LyricalNote']).to_string(index=False)
+                            txtstr = txtstr + CurrentNote + ' '
+                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (RaagaTable['Scale'] == Scale)]
+            
+                            strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
+            
+                            if patternCnt == 1:
+                                fout.write (strToWrite.replace("eighth",speed).replace('<text>','<text font-size="20">'))
+                            elif patternCnt == patternLen:
+                                fout.write (strToWrite.replace("begin","end").replace("eighth",speed))
+                            else:
+                                fout.write (strToWrite.replace("begin","continue").replace("eighth",speed))
+                            fout.write('\n')
+            
+                        # Find how many notes are missing for the 8 Beat and add Z note
+                        MissingNotes = 4 - len(Pattern)%4
+                        if MissingNotes == 4:
+                            MissingNotes = 0
+            
+                        # Loop Through missing notes and add the unpitched note
+                        for m in range(MissingNotes):
+                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == 'Z')]
+                            strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
+                            fout.write(strToWrite.replace("begin","end").replace("eighth",speed))
+                            fout.write('\n')
+            
+                    fout.write('  </measure>\n')
+                    fouttxt.write(txtstr)
+                    fouttxt.write('\n')
+                    txtstr = ""
+                    fout.write('<measure number="'+str(MeasureNumber+1)+'"><print new-system="yes"></print>\n<direction placement="above"><direction-type><words relative-y="10.00">PATTERN:'+Pattern+' - AVAROH</words></direction-type></direction>')
+                    fout.write('\n<attributes><divisions>'+division+'</divisions><key><fifths>0</fifths></key><clef><sign>G</sign><line>2</line></clef></attributes>')
+                    MeasureNumber +=1
+                    for a in range(AvarohLength):
+            
+                        #Loop through pattern for Aaroh
+                        patternCnt = 0
+                        patternLen = len(Pattern)
                         
-                        
-                        fout.write('\n')
-        
-                    # Find how many notes are missing for the 8 Beat and add Z note
-                    MissingNotes = 4 - len(Pattern)%4
-                    if MissingNotes == 4:
-                        MissingNotes = 0
-        
-                    # Loop Through missing notes and add the unpitched note
-                    for m in range(MissingNotes):
-                        CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == 'Z')]
-                        strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
-                        fout.write(strToWrite.replace("begin","end").replace("eighth",speed))
-                        fout.write('\n')
-       
-        
-                fout.write('  </measure>\n')
-                fouttxt.write(txtstr)
-                fouttxt.write('\n')
-                txtstr = ""
+                        for p in Pattern:
+                            currPattern = int(p) + a
+                            patternCnt +=1
+            
+                            if currPattern == AvarohLength:
+                                currPattern = 100
+                            elif currPattern > AvarohLength:
+                                currPattern = 100 + currPattern - AvarohLength
+                            #print(currPattern)    
+                            #Search Sequence in CurrentRaag and get the LyricalNote
+                            CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (CurrentRaag['Aaroh_Avaroh'] == "Avaroh")])['LyricalNote']).to_string(index=False)
+                            txtstr = txtstr + CurrentNote + ' '
+                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (RaagaTable['Scale'] == Scale)]
+            
+                            strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
+                            if patternCnt == 1:
+                                fout.write (strToWrite.replace("eighth",speed).replace('<text>','<text font-size="20">'))
+                            elif patternCnt == patternLen:
+                                fout.write (strToWrite.replace("begin","end").replace("eighth",speed))
+                            else:
+                                fout.write (strToWrite.replace("begin","continue").replace("eighth",speed))
+                            
+                            
+                            fout.write('\n')
+            
+                        # Find how many notes are missing for the 8 Beat and add Z note
+                        MissingNotes = 4 - len(Pattern)%4
+                        if MissingNotes == 4:
+                            MissingNotes = 0
+            
+                        # Loop Through missing notes and add the unpitched note
+                        for m in range(MissingNotes):
+                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == 'Z')]
+                            strToWrite = (CurrentXML['XMLNotation']).to_string(index=False)
+                            fout.write(strToWrite.replace("begin","end").replace("eighth",speed))
+                            fout.write('\n')
+           
+            
+                    fout.write('  </measure>\n')
+                    fouttxt.write(txtstr)
+                    fouttxt.write('\n')
+                    txtstr = ""
+            except ValueError as e:
+                print("Invalid input for Patterns.. It should be numbers on each line")
+    
         ###########################################
     
         ##########################################
