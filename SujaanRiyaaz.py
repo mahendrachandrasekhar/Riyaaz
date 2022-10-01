@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import Riyaaz
-st.image("Sujaan.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
+#st.image("Sujaan.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
+st.set_page_config(page_title='Daily Riyaaz')
 
 instrument = ""
 currTime = datetime.now()
@@ -22,7 +23,7 @@ with tab1:
             
         cols2 = st.columns(1)
         for i, col2 in enumerate(cols2):
-            col2.subheader("Pick Pre-Defined Patterns", anchor=None)
+            col2.markdown('#### _Pick Pre-Defined Patterns_')
         cols3 = st.columns(2)
         for i, col in enumerate(cols3):
            if i == 0:
@@ -31,35 +32,49 @@ with tab1:
            elif i == 1:
                includeBasicPattern2 = col.checkbox('1st Note Fixed E.g. SS, SR, SG, ...', key='includeBasicPattern2',value=False)
                includeBasicPaltas   = col.checkbox('Some Built-in Notations', key='includeBasicPaltas',value=False)
-               includeLibraryPaltas = col.checkbox('Include Palta Patterns from our in-built library.', key='includeLibraryPaltas',value=False)
+               includeLibraryPaltas = col.checkbox('Palta Patterns from our in-built library.', key='includeLibraryPaltas',value=False)
         
         cols4 = st.columns(1)
         for i, col4 in enumerate(cols4):
            inputPattern = col4.text_area("Generate your own Palta Patterns", value="", height=None, max_chars=None, key="inputPattern")
-           col4.subheader("Merukhand", anchor=None)
+           col4.markdown('#### _Merukhand_')
         cols5 = st.columns(2)
         for i, col5 in enumerate(cols5):
            if i == 0:
                includeMerukhand = col5.checkbox('Include Merukhand', key='includeMerukhand',value=False)
            if i == 1:
-               merukhandPattern = col5.text_input("Enter the Merukhand Pattern (or leave blank for default)", key="merukhandPattern")
+               merukhandPattern = col5.text_input("Merukhand Pattern (or leave blank for default)", key="merukhandPattern")
     
     
         submitted = st.form_submit_button('Submit')
-        if submitted:
-            with st.spinner("Wait for it don't click Submit again..."):
-                Riyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
-                audio_file = open(outFileSuffix+'.mp3', 'rb')
-                audio_bytes = audio_file.read()
-                st.audio(audio_bytes, format='audio/mp3')
-                
-                txtOutput = pd.read_csv(outFileSuffix+".csv",header=None)
-                for pattern in txtOutput[0]:
-                    st.write(pattern)
 with tab2:
     st.image("Notations.png", caption=None, width=400, clamp=False, channels="RGB", output_format="auto")
 with tab3:
     st.image("HowToUseTheApplication.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 with tab4:
     st.text('For Ideas & Suggestions, Contact: Mahendra Chandrasekhar, mahendracc@hotmail.com')
-    st.text('Follow Sujaan Music: https://www.facebook.com/sujaanmusic/')
+    #st.text('Follow Sujaan Music: https://www.facebook.com/sujaanmusic/')
+
+###Formatting Options
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
+########
+if submitted:
+    with st.spinner("Wait for it don't click Submit again..."):
+        Riyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
+        audio_file = open(outFileSuffix+'.mp3', 'rb')
+        audio_bytes = audio_file.read()
+        st.audio(audio_bytes, format='audio/mp3')
+        
+        txtOutput = pd.read_csv(outFileSuffix+".csv",header=None)
+        for pattern in txtOutput[0]:
+            st.text(pattern)
+
+    Riyaaz.cleanupFile(outFileSuffix)         
