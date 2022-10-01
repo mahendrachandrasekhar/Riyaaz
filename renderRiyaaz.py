@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit_ext as ste
 import pandas as pd
 from datetime import datetime
 import mainRiyaaz
@@ -15,7 +16,7 @@ with tab1:
         cols1 = st.columns(4)
         for i, col1 in enumerate(cols1):
            if i == 0:
-               inputRaag = col1.selectbox('Select the Raaga',('AhirBhairav','Bhairav','Bhairavi','Bhimpalasi','Bhoopali','Bhupeshwari','Bihag','Bilawal','Charukeshi','Keerwani','Khamaj','Malkauns','Rageshree','Shivranjini','Todi','Vibhas','Yaman'),index=7,key="inputRaag")
+               inputRaag = col1.selectbox('Select the Thaat/Raaga',('Asavari','Bilawal','Bhairav','Bhairavi','Kalyan','Khamaj-Thaat','Kafi','Marva','Poorvi','Todi','AhirBhairav','Bhimpalasi','Bhoopali','Bhupeshwari','Bihag','Charukeshi','Keerwani','Khamaj','Malkauns','Rageshree','Shivranjini','Vibhas','Yaman'),index=1,key="inputRaag")
            elif i == 1:
                inputPitch = col1.selectbox('Select the Pitch',('A','A#','B','C','C#','D','D#','E','F','F#','G','G#'),index=4,key="inputPitch")
            elif i == 2:
@@ -76,6 +77,8 @@ if submitted:
         st.audio(audio_bytes, format='audio/mp3')
         
         txtOutput = pd.read_csv(outFileSuffix+".csv",header=None)
+        ste.download_button("Download notations as CSV", txtOutput.to_csv().encode('utf-8'), "Notations.csv")
+        csv = txtOutput.to_csv().encode('utf-8')
         for pattern in txtOutput[0]:
             st.write(pattern)
 
