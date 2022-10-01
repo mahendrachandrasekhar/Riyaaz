@@ -10,7 +10,7 @@ import fileOperations
 
 
 def cleanupFile(filename):
-    check_output('rm ' + filename+'.* ', shell=True)
+    check_output('ls ' + filename+'.* ', shell=True)
 
 
 def getRaagList(myRaag):
@@ -32,7 +32,7 @@ def getAarohAvaroh(basicFileName, extensionFileName):
     # The File template used will generate blank rows, so remove it out
     AarohAvarohExtended.drop(AarohAvarohExtended.index[(
         AarohAvarohExtended["Raag"].isnull())], axis=0, inplace=True)
-    print(len(AarohAvarohExtended))
+
     return pd.concat([AarohAvarohBasic, AarohAvarohExtended])
 
 
@@ -43,6 +43,10 @@ def getCurrentPattern(n, len):
         return 100 + n - len
     else:
         return n
+
+
+def getAarohAvarohLen(myRaag, myDirection):
+    return len((myRaag.loc[(myRaag['Sequence'] <= 100) & (myRaag['Aaroh_Avaroh'] == myDirection)]))
 
 
 def main():
@@ -73,217 +77,104 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
     AarohAvaroh = getAarohAvaroh(
         "Data-Aaroh-Avaroh-Basic.csv", "Data-Aaroh-Avaroh-Extension.csv")
     RaagList = getRaagList(inputRaag)
-
-    ##############
     Scale = inputPitch
-    ##############
 
     for Raag in RaagList['RaagaName']:
-        # Initialize
+        # Initialize files
         fouttxt = open(outFileSuffix+".csv", mode='w')
         fout = open(outFileSuffix+".xml", mode='w')
         fileOperations.initializeFile(fout, Raag, instrument)
-        # Logic
-        # Get all the notes for the Raag in a table
-        CurrentRaag = AarohAvaroh.loc[AarohAvaroh['Raag'] == Raag]
-        AarohLength = len((CurrentRaag.loc[(CurrentRaag['Sequence'] <= 100) & (
-            CurrentRaag['Aaroh_Avaroh'] == "Aaroh")]))
-        AvarohLength = len((CurrentRaag.loc[(CurrentRaag['Sequence'] <= 100) & (
-            CurrentRaag['Aaroh_Avaroh'] == "Avaroh")]))
         MeasureNumber = 0
 
-        ##########################################
-
-        if includeAarohAvaroh:
-            # BASIC AAROH AND AVAROH
-            firstNote = ""
-            firstXML = ""
-            strToPrefix = ""
-
-            fileOperations.startMeasure(fout, "AAROH", MeasureNumber, speed)
-
-            for a in range(AarohLength):
-                currPattern = getCurrentPattern(a + 1, AarohLength)
-                CurrentNote = fileOperations.findAndWriteCurrentNoteWithPrefix(
-                    fout, CurrentRaag, currPattern, "Aaroh", strToPrefix, RaagaTable, Scale, speed)
-                fileOperations.writeEmptyNote(fout, RaagaTable, speed)
-                txtstr = txtstr + firstNote + CurrentNote + ' '
-
-            fout.write('  </measure>\n')
-            fouttxt.write(txtstr)
-            fouttxt.write('\n')
-            txtstr = ""
-
-            MeasureNumber += 1
-            fileOperations.startMeasure(fout, "AVAROH", MeasureNumber, speed)
-
-            for a in range(AvarohLength):
-                currPattern = getCurrentPattern(a + 1, AvarohLength)
-                CurrentNote = fileOperations.findAndWriteCurrentNoteWithPrefix(
-                    fout, CurrentRaag, currPattern, "Avaroh", strToPrefix, RaagaTable, Scale, speed)
-                fileOperations.writeEmptyNote(fout, RaagaTable, speed)
-                txtstr = txtstr + firstNote + CurrentNote + ' '
-
-            fout.write('  </measure>\n')
-            fouttxt.write(txtstr)
-            fouttxt.write('\n')
-            txtstr = ""
-            # BASIC AAROH AND AVAROH - END
+        # Get all the notes for the Raag in a table
+        CurrentRaag = AarohAvaroh.loc[AarohAvaroh['Raag'] == Raag]
+        AarohLength = getAarohAvarohLen(CurrentRaag, "Aaroh")
+        AvarohLength = getAarohAvarohLen(CurrentRaag, "Avaroh")
 
         ##########################################
+        simplePatternCnt = 0
+        for simplePattern in [includeAarohAvaroh,includeBasicPattern2]:
         ##########################################
-        if includeBasicPattern2:
-            # Pattern type 1-- BEGIN - Aaroh (SS,SR, SG...)
-            firstNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == 1) & (
-                CurrentRaag['Aaroh_Avaroh'] == "Aaroh")])['LyricalNote']).to_string(index=False)
-            firstXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == firstNote) & (
-                RaagaTable['Scale'] == Scale)]
-            strToPrefix = (firstXML['XMLNotation']).to_string(index=False)
+            if simplePattern:
 
-            fileOperations.startMeasure(
-                fout, "Pattern 1 - AAROH", MeasureNumber, speed)
+                for direction in ["Aaroh", "Avaroh"]:
+                    fileOperations.startMeasure(
+                        fout, direction, MeasureNumber, speed)
+                    directionlen = getAarohAvarohLen(CurrentRaag, direction)
+                    
+                    ##Pattern Init
+                    if simplePatternCnt == 0: # BASIC AAROH AND AVAROH
+                        firstNote = ""
+                        firstXML = ""
+                        strToPrefix = ""
+                    if simplePatternCnt == 1: # Pattern type 1-- BEGIN - Aaroh (SS,SR, SG...)
+                        firstNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == 1) & (
+                            CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False)
+                        firstXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == firstNote) & (
+                            RaagaTable['Scale'] == Scale)]
+                        strToPrefix = (firstXML['XMLNotation']).to_string(index=False)
 
-            for a in range(AarohLength):
-                currPattern = getCurrentPattern(a + 1, AarohLength)
-                CurrentNote = fileOperations.findAndWriteCurrentNoteWithPrefix(
-                    fout, CurrentRaag, currPattern, "Aaroh", strToPrefix, RaagaTable, Scale, speed)
-                fileOperations.writeEmptyNote(fout, RaagaTable, speed)
-                txtstr = txtstr + firstNote + CurrentNote + ' '
+                    for a in range(directionlen):
+                        currPattern = getCurrentPattern(a + 1, directionlen)
+                        CurrentNote = fileOperations.findAndWriteCurrentNoteWithPrefix(
+                            fout, CurrentRaag, currPattern, direction, strToPrefix, RaagaTable, Scale, speed)
+                        fileOperations.writeEmptyNote(fout, RaagaTable, speed)
+                        txtstr = txtstr + firstNote + CurrentNote + ' '
 
-            fout.write('  </measure>\n')
-            fouttxt.write(txtstr)
-            fouttxt.write('\n')
-            txtstr = ""
-            # Pattern type 1-- END
-
-            MeasureNumber += 1
-            # Pattern type 1-- BEGIN - Avaroh
-            firstNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == 1) & (
-                CurrentRaag['Aaroh_Avaroh'] == "Avaroh")])['LyricalNote']).to_string(index=False)
-            firstXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == firstNote) & (
-                RaagaTable['Scale'] == Scale)]
-            strToPrefix = (firstXML['XMLNotation']).to_string(index=False)
-
-            fileOperations.startMeasure(
-                fout, "Pattern 1 - AVAROH", MeasureNumber, speed)
-
-            for a in range(AvarohLength):
-                currPattern = getCurrentPattern(a + 1, AvarohLength)
-                CurrentNote = fileOperations.findAndWriteCurrentNoteWithPrefix(
-                    fout, CurrentRaag, currPattern, "Avaroh", strToPrefix, RaagaTable, Scale, speed)
-                fileOperations.writeEmptyNote(fout, RaagaTable, speed)
-                txtstr = txtstr + firstNote + CurrentNote + ' '
-
-            fout.write('  </measure>\n')
-            fouttxt.write(txtstr)
-            fouttxt.write('\n')
-            txtstr = ""
-            # Pattern type 1-- END (SS,SR, SG...)
-            MeasureNumber += 1
+                    txtstr = fileOperations.endMeasure(fout, fouttxt, txtstr)
+                    MeasureNumber += 1
+            simplePatternCnt+=1
         ##########################################
         ##########################################
         if includeBasicPattern3:
-            # Pattern type 2-- BEGIN (S, SRS,SRGRS, SRGMGRS...)
-            fileOperations.startMeasure(
-                fout, "Pattern 2 - AAROH", MeasureNumber, speed)
+            for direction in ["Aaroh", "Avaroh"]:
+                # Pattern type 2-- BEGIN (S, SRS,SRGRS, SRGMGRS...)
+                fileOperations.startMeasure(
+                    fout, "Pattern 2 - "+direction, MeasureNumber, speed)
+                directionlen = getAarohAvarohLen(CurrentRaag, direction)
+                
+                ##Pattern Init
+                strPrefixUp = ""
+                strPrefixDown = ""
+                noteUp = ""
+                noteDown = ""
 
-            strPrefixUp = ""
-            strPrefixDown = ""
-            noteUp = ""
-            noteDown = ""
+                for a in range(1, directionlen, 1):
+                    currPattern = getCurrentPattern(a, directionlen)
 
-            for a in range(1, AarohLength, 1):
-                currPattern = getCurrentPattern(a, AarohLength)
-
-                CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                    CurrentRaag['Aaroh_Avaroh'] == "Aaroh")])['LyricalNote']).to_string(index=False)
-                CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
-                    RaagaTable['Scale'] == Scale)]
-                strCurr = (CurrentXML['XMLNotation']).to_string(index=False)
-                strToWriteUp = strPrefixUp.replace(
-                    "eighth", speed) + strCurr.replace("begin", "end").replace("eighth", speed)
-                strPrefixUp = strToWriteUp
-                fout.write(strToWriteUp)
-
-                txtstr = txtstr + noteUp + CurrentNote
-                noteUp = noteUp + CurrentNote
-
-                for b in range(a-1, 0, -1):
-
-                    currPattern = getCurrentPattern(b, AarohLength)
                     CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                        CurrentRaag['Aaroh_Avaroh'] == "Aaroh")])['LyricalNote']).to_string(index=False)
+                        CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False)
                     CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
                         RaagaTable['Scale'] == Scale)]
-                    strCurr = (CurrentXML['XMLNotation']
-                               ).to_string(index=False)
-                    strToWriteDown = strCurr.replace(
-                        "begin", "end").replace("eighth", speed)
-                    fout.write(strToWriteDown)
+                    strCurr = (CurrentXML['XMLNotation']).to_string(index=False)
+                    strToWriteUp = strPrefixUp.replace(
+                        "eighth", speed) + strCurr.replace("begin", "end").replace("eighth", speed)
+                    strPrefixUp = strToWriteUp
+                    fout.write(strToWriteUp)
 
-                    noteDown = CurrentNote
-                    txtstr = txtstr + noteDown
+                    txtstr = txtstr + noteUp + CurrentNote
+                    noteUp = noteUp + CurrentNote
 
-                txtstr = txtstr + ' '
-                fileOperations.writeEmptyNote(fout, RaagaTable, speed)
+                    for b in range(a-1, 0, -1):
 
-            fout.write('  </measure>\n')
-            fouttxt.write(txtstr)
-            fouttxt.write('\n')
-            txtstr = ""
+                        currPattern = getCurrentPattern(b, directionlen)
+                        CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
+                            CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False)
+                        CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
+                            RaagaTable['Scale'] == Scale)]
+                        strCurr = (CurrentXML['XMLNotation']
+                                ).to_string(index=False)
+                        strToWriteDown = strCurr.replace(
+                            "begin", "end").replace("eighth", speed)
+                        fout.write(strToWriteDown)
 
-            # Pattern type 2-- END
+                        noteDown = CurrentNote
+                        txtstr = txtstr + noteDown
 
-            # Pattern type 2-- BEGIN Avaroh
-            fileOperations.startMeasure(
-                fout, "Pattern 2 - AVAROH", MeasureNumber, speed)
+                    txtstr = txtstr + ' '
+                    fileOperations.writeEmptyNote(fout, RaagaTable, speed)
 
-            strPrefixUp = ""
-            strPrefixDown = ""
-            noteUp = ""
-            noteDown = ""
-
-            for a in range(1, AvarohLength, 1):
-                currPattern = getCurrentPattern(a, AvarohLength)
-
-                CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                    CurrentRaag['Aaroh_Avaroh'] == "Avaroh")])['LyricalNote']).to_string(index=False)
-                CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
-                    RaagaTable['Scale'] == Scale)]
-                strCurr = (CurrentXML['XMLNotation']).to_string(index=False)
-                strToWriteUp = strPrefixUp.replace(
-                    "eighth", speed) + strCurr.replace("begin", "end").replace("eighth", speed)
-                strPrefixUp = strToWriteUp
-                fout.write(strToWriteUp)
-
-                txtstr = txtstr + noteUp + CurrentNote
-                noteUp = noteUp + CurrentNote
-
-                for b in range(a-1, 0, -1):
-
-                    currPattern = getCurrentPattern(b, AvarohLength)
-                    CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                        CurrentRaag['Aaroh_Avaroh'] == "Avaroh")])['LyricalNote']).to_string(index=False)
-                    CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
-                        RaagaTable['Scale'] == Scale)]
-                    strCurr = (CurrentXML['XMLNotation']
-                               ).to_string(index=False)
-                    strToWriteDown = strCurr.replace(
-                        "begin", "end").replace("eighth", speed)
-                    fout.write(strToWriteDown)
-
-                    noteDown = CurrentNote
-                    txtstr = txtstr + noteDown
-
-                txtstr = txtstr + ' '
-                fileOperations.writeEmptyNote(fout, RaagaTable, speed)
-
-            fout.write('  </measure>\n')
-            fouttxt.write(txtstr)
-            fouttxt.write('\n')
-            txtstr = ""
-
-            # Pattern type 2-- END
+                txtstr = fileOperations.endMeasure(fout, fouttxt, txtstr)
 
         ##########################################
         # Pattern 3: Basic Platas only till Sa
@@ -295,112 +186,58 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                 Pattern = str(palta)
                 patternLen = len(Pattern)
 
-                if not True in [int(i) > AarohLength for i in Pattern]:
-                    fileOperations.startMeasure(
-                        fout, 'PATTERN:'+Pattern+' - AAROH', MeasureNumber, speed)
+                for direction in ["Aaroh", "Avaroh"]:
+                    directionlen = getAarohAvarohLen(CurrentRaag, direction)
+                    if not True in [int(i) > directionlen for i in Pattern]:
+                        fileOperations.startMeasure(
+                            fout, 'PATTERN:'+Pattern+' - ' + direction, MeasureNumber, speed)
+                        MeasureNumber += 1
+                        for a in range(directionlen):
 
-                    MeasureNumber += 1
-                    for a in range(AarohLength):
+                            # Loop through pattern 
+                            patternCnt = 0
+                            printPattern = True
+                            printList = []
 
-                        # Loop through pattern for Aaroh
-                        patternCnt = 0
-                        printPattern = True
-                        printList = []
+                            for p in Pattern:
+                                patternCnt += 1
+                                if (int(p) + a) > directionlen:
+                                    printPattern = False
+                                currPattern = getCurrentPattern(
+                                    int(p) + a, directionlen)
 
-                        for p in Pattern:
-                            patternCnt += 1
-                            currPattern = getCurrentPattern(
-                                int(p) + a, AarohLength)
+                                CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
+                                    CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False)
+                                txtstr = txtstr + CurrentNote
+                                CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
+                                    RaagaTable['Scale'] == Scale)]
 
-                            if int(p) + a > AarohLength:
-                                printPattern = False
+                                strToWrite = (CurrentXML['XMLNotation']).to_string(
+                                    index=False)
 
-                            CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                                CurrentRaag['Aaroh_Avaroh'] == "Aaroh")])['LyricalNote']).to_string(index=False)
-                            txtstr = txtstr + CurrentNote
-                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
-                                RaagaTable['Scale'] == Scale)]
+                                if patternCnt == 1:
+                                    finalStrToWrite = strToWrite.replace("eighth", speed).replace(
+                                        '<text>', '<text font-size="20">')
+                                elif patternCnt == patternLen:
+                                    finalStrToWrite = strToWrite.replace(
+                                        "begin", "end").replace("eighth", speed)
+                                    txtstr = txtstr + ' '
+                                else:
+                                    finalStrToWrite = strToWrite.replace(
+                                        "begin", "continue").replace("eighth", speed)
 
-                            strToWrite = (CurrentXML['XMLNotation']).to_string(
-                                index=False)
+                                printList.append(finalStrToWrite)
 
-                            if patternCnt == 1:
-                                finalStrToWrite = strToWrite.replace("eighth", speed).replace(
-                                    '<text>', '<text font-size="20">')
-                            elif patternCnt == patternLen:
-                                finalStrToWrite = strToWrite.replace(
-                                    "begin", "end").replace("eighth", speed)
-                                txtstr = txtstr + ' '
-                            else:
-                                finalStrToWrite = strToWrite.replace(
-                                    "begin", "continue").replace("eighth", speed)
+                            if printPattern:
+                                for pl in printList:
+                                    fout.write(pl)
+                                    fout.write('\n')
+                                    fouttxt.write(txtstr)
+                                    txtstr = ""
 
-                            printList.append(finalStrToWrite)
+                        txtstr = fileOperations.endMeasure(fout, fouttxt, "")
 
-                        if printPattern:
-                            for pl in printList:
-                                fout.write(pl)
-                                fout.write('\n')
-                                fouttxt.write(txtstr)
-                                txtstr = ""
-
-                    fout.write('  </measure>\n')
-                    fouttxt.write('\n')
-                    txtstr = ""
-
-                    fileOperations.startMeasure(
-                        fout, 'PATTERN:'+Pattern+' - AVAROH', MeasureNumber, speed)
-                    MeasureNumber += 1
-                if not True in [int(i) > AvarohLength for i in Pattern]:
-                    for a in range(AvarohLength):
-
-                        # Loop through pattern for Aaroh
-                        patternCnt = 0
-                        printPattern = True
-                        printList = []
-
-                        for p in Pattern:
-                            currPattern = getCurrentPattern(
-                                int(p) + a, AvarohLength)
-                            patternCnt += 1
-
-                            if int(p) + a > AvarohLength:
-                                printPattern = False
-
-                            # Search Sequence in CurrentRaag and get the LyricalNote
-                            CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                                CurrentRaag['Aaroh_Avaroh'] == "Avaroh")])['LyricalNote']).to_string(index=False)
-                            txtstr = txtstr + CurrentNote
-                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
-                                RaagaTable['Scale'] == Scale)]
-
-                            strToWrite = (CurrentXML['XMLNotation']).to_string(
-                                index=False)
-                            if patternCnt == 1:
-                                finalStrToWrite = strToWrite.replace("eighth", speed).replace(
-                                    '<text>', '<text font-size="20">')
-                            elif patternCnt == patternLen:
-                                finalStrToWrite = strToWrite.replace(
-                                    "begin", "end").replace("eighth", speed)
-                                txtstr = txtstr + ' '
-                            else:
-                                finalStrToWrite = strToWrite.replace(
-                                    "begin", "continue").replace("eighth", speed)
-
-                            printList.append(finalStrToWrite)
-
-                        if printPattern:
-                            MeasureNumber += 1
-                            for pl in printList:
-                                fout.write(pl)
-                                fout.write('\n')
-                                fouttxt.write(txtstr)
-                                txtstr = ""
-
-                    fout.write('  </measure>\n')
-                    fout.write('\n')
-                    fouttxt.write('\n')
-                    txtstr = ""
+                fout.write('\n')
         ###########################################
 
         ##########################################
@@ -435,110 +272,58 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
 
                 for palta in PaltaList['PatlaNotation']:
                     Pattern = str(palta)
-                    fileOperations.startMeasure(
-                        fout, 'PATTERN:'+Pattern+' - AAROH', MeasureNumber, speed)
-                    MeasureNumber += 1
 
-                    for a in range(AarohLength):
+                    for direction in ["Aaroh", "Avaroh"]:
+                        directionlen = getAarohAvarohLen(CurrentRaag, direction)
+                        fileOperations.startMeasure(
+                            fout, 'PATTERN:'+Pattern+' - '+ direction , MeasureNumber, speed)
+                        MeasureNumber += 1
+                        for a in range(directionlen):
 
-                        # Loop through pattern for Aaroh
-                        patternCnt = 0
-                        patternLen = len(Pattern)
+                            # Loop through pattern 
+                            patternCnt = 0
+                            patternLen = len(Pattern)
 
-                        for p in Pattern:
-                            currPattern = getCurrentPattern(
-                                int(p) + a, AarohLength)
-                            patternCnt += 1
+                            for p in Pattern:
+                                currPattern = getCurrentPattern(
+                                    int(p) + a, directionlen)
+                                patternCnt += 1
 
-                            # print(currPattern)
-                            # Search Sequence in CurrentRaag and get the LyricalNote
-                            CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                                CurrentRaag['Aaroh_Avaroh'] == "Aaroh")])['LyricalNote']).to_string(index=False)
-                            txtstr = txtstr + CurrentNote
-                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
-                                RaagaTable['Scale'] == Scale)]
+                                # print(currPattern)
+                                # Search Sequence in CurrentRaag and get the LyricalNote
+                                CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
+                                    CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False)
+                                txtstr = txtstr + CurrentNote
+                                CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
+                                    RaagaTable['Scale'] == Scale)]
 
-                            strToWrite = (CurrentXML['XMLNotation']).to_string(
-                                index=False)
+                                strToWrite = (CurrentXML['XMLNotation']).to_string(
+                                    index=False)
 
-                            if patternCnt == 1:
-                                fout.write(strToWrite.replace("eighth", speed).replace(
-                                    '<text>', '<text font-size="20">'))
-                            elif patternCnt == patternLen:
-                                fout.write(strToWrite.replace(
-                                    "begin", "end").replace("eighth", speed))
-                                txtstr = txtstr + ' '
-                            else:
-                                fout.write(strToWrite.replace(
-                                    "begin", "continue").replace("eighth", speed))
-                            fout.write('\n')
+                                if patternCnt == 1:
+                                    fout.write(strToWrite.replace("eighth", speed).replace(
+                                        '<text>', '<text font-size="20">'))
+                                elif patternCnt == patternLen:
+                                    fout.write(strToWrite.replace(
+                                        "begin", "end").replace("eighth", speed))
+                                    txtstr = txtstr + ' '
+                                else:
+                                    fout.write(strToWrite.replace(
+                                        "begin", "continue").replace("eighth", speed))
+                                fout.write('\n')
 
-                        # Find how many notes are missing for the 8 Beat and add Z note
-                        MissingNotes = 4 - len(Pattern) % 4
-                        if MissingNotes == 4:
-                            MissingNotes = 0
+                            # Find how many notes are missing for the 8 Beat and add Z note
+                            MissingNotes = 4 - len(Pattern) % 4
+                            if MissingNotes == 4:
+                                MissingNotes = 0
 
-                        # Loop Through missing notes and add the unpitched note
-                        for m in range(MissingNotes):
-                            fileOperations.writeEmptyNote(
-                                fout, RaagaTable, speed)
+                            # Loop Through missing notes and add the unpitched note
+                            for m in range(MissingNotes):
+                                fileOperations.writeEmptyNote(
+                                    fout, RaagaTable, speed)
 
-                    fout.write('  </measure>\n')
-                    fouttxt.write(txtstr)
-                    fouttxt.write('\n')
-                    txtstr = ""
+                        txtstr = fileOperations.endMeasure(fout, fouttxt, txtstr)
 
-                    fileOperations.startMeasure(
-                        fout, 'PATTERN:'+Pattern+' - AVAROH', MeasureNumber, speed)
-                    MeasureNumber += 1
-                    for a in range(AvarohLength):
-
-                        # Loop through pattern for Aaroh
-                        patternCnt = 0
-                        patternLen = len(Pattern)
-
-                        for p in Pattern:
-                            currPattern = getCurrentPattern(
-                                int(p) + a, AvarohLength)
-                            patternCnt += 1
-
-                            # print(currPattern)
-                            # Search Sequence in CurrentRaag and get the LyricalNote
-                            CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
-                                CurrentRaag['Aaroh_Avaroh'] == "Avaroh")])['LyricalNote']).to_string(index=False)
-                            txtstr = txtstr + CurrentNote
-                            CurrentXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == CurrentNote) & (
-                                RaagaTable['Scale'] == Scale)]
-
-                            strToWrite = (CurrentXML['XMLNotation']).to_string(
-                                index=False)
-                            if patternCnt == 1:
-                                fout.write(strToWrite.replace("eighth", speed).replace(
-                                    '<text>', '<text font-size="20">'))
-                            elif patternCnt == patternLen:
-                                fout.write(strToWrite.replace(
-                                    "begin", "end").replace("eighth", speed))
-                                txtstr = txtstr + ' '
-                            else:
-                                fout.write(strToWrite.replace(
-                                    "begin", "continue").replace("eighth", speed))
-
-                            fout.write('\n')
-
-                        # Find how many notes are missing for the 8 Beat and add Z note
-                        MissingNotes = 4 - len(Pattern) % 4
-                        if MissingNotes == 4:
-                            MissingNotes = 0
-
-                        # Loop Through missing notes and add the unpitched note
-                        for m in range(MissingNotes):
-                            fileOperations.writeEmptyNote(
-                                fout, RaagaTable, speed)
-
-                    fout.write('  </measure>\n')
-                    fouttxt.write(txtstr)
-                    fouttxt.write('\n')
-                    txtstr = ""
             except ValueError as e:
                 print("Invalid input for Patterns.. It should be numbers on each line")
 
@@ -588,10 +373,7 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                         fileOperations.startMeasure(
                             fout, '', MeasureNumber, speed)
 
-                fout.write('  </measure>\n')
-                fouttxt.write(txtstr)
-                fouttxt.write('\n')
-                txtstr = ""
+                txtstr = fileOperations.endMeasure(fout, fouttxt, txtstr)
                 MeasureNumber += 1
                 fileOperations.startMeasure(fout, '', MeasureNumber, speed)
 
@@ -635,10 +417,7 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                         fileOperations.startMeasure(
                             fout, '', MeasureNumber, speed)
 
-                fout.write('  </measure>\n')
-                fouttxt.write(txtstr)
-                fouttxt.write('\n')
-                txtstr = ""
+                txtstr = fileOperations.endMeasure(fout, fouttxt, txtstr)
                 MeasureNumber += 1
                 fileOperations.startMeasure(fout, '', MeasureNumber, speed)
             fout.write('  </measure>\n')

@@ -84,3 +84,10 @@ def findAndWriteCurrentNoteWithPrefix(xmlHandle, myRaag, currPattern, Aaroh_Or_A
     xmlHandle.write(myStrToPrefix.replace("eighth", mySpeed) +
                     myStrToWrite.replace("begin", "end").replace("eighth", mySpeed))
     return myNote
+
+def endMeasure(xmlHandle, csvHandle, myStr):
+    xmlHandle.write('  </measure>\n')
+    if myStr != "":
+        csvHandle.write(myStr)
+    csvHandle.write('\n')
+    return ""

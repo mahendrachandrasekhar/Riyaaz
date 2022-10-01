@@ -1,0 +1,77 @@
+n. S g m P n S' 
+S' n D P m g R S 
+n.n. n.S n.g n.m n.P n.n n.S' 
+S'S' S'n S'D S'P S'm S'g S'R S'S 
+n. n.Sn. n.SgSn. n.SgmgSn. n.SgmPmgSn. n.SgmPnPmgSn. 
+S' S'nS' S'nDnS' S'nDPDnS' S'nDPmPDnS' S'nDPmgmPDnS' S'nDPmgRgmPDnS' 
+n.Sg Sgm gmP mPn PnS' 
+S'nD nDP DPm Pmg mgR gRS 
+n.Sgm SgmP gmPn mPnS' 
+S'nDP nDPm DPmg PmgR mgRS 
+n.SgmP SgmPn gmPnS' 
+S'nDPm nDPmg DPmgR PmgRS 
+n.SgmPn SgmPnS' 
+S'nDPmg nDPmgR DPmgRS 
+n.SgmPnS' 
+S'nDPmgR nDPmgRS 
+S'nDPmgRS 
+n.S Sg gm mP Pn nS' 
+S'n nD DP Pm mg gR RS 
+n.g Sm gP mn PS' 
+S'D nP Dm Pg mR gS 
+n.m SP gn mS' 
+S'P nm Dg PR mS 
+n.P Sn gS' 
+S'm ng DR PS 
+n.n SS' 
+S'g nR DS 
+n.S' 
+S'R nS 
+S'S 
+n.Sn.g SgSm gmgP mPmn PnPS' 
+S'nS'D nDnP DPDm PmPg mgmR gRgS 
+n.Sn.gn.Sgm SgSmSgmP gmgPgmPn mPmnmPnS' 
+S'nS'DS'nDP nDnPnDPm DPDmDPmg PmPgPmgR mgmRmgRS 
+n.Sn.gn.SgmP SgSmSgmPn gmgPgmPnS' 
+S'nS'DS'nDPm nDnPnDPmg DPDmDPmgR PmPgPmgRS 
+n.Sn.gn.SgmPn SgSmSgmPnS' 
+S'nS'DS'nDPmg nDnPnDPmgR DPDmDPmgRS 
+n.Sn.gn.SgmPnS' 
+S'nS'DS'nDPmgR nDnPnDPmgRS 
+S'nS'DS'nDPmgRS 
+n.Sn.gg SgSmm gmgPP mPmnn PnPS'S' 
+S'nS'DD nDnPP DPDmm PmPgg mgmRR gRgSS 
+n.Sn.ggn.Sgm SgSmmSgmP gmgPPgmPn mPmnnmPnS' 
+S'nS'DDS'nDP nDnPPnDPm DPDmmDPmg PmPggPmgR mgmRRmgRS 
+n.Sn.ggn.SgmP SgSmmSgmPn gmgPPgmPnS' 
+S'nS'DDS'nDPm nDnPPnDPmg DPDmmDPmgR PmPggPmgRS 
+n.Sn.ggn.SgmPn SgSmmSgmPnS' 
+S'nS'DDS'nDPmg nDnPPnDPmgR DPDmmDPmgRS 
+n.Sn.ggn.SgmPnS' 
+S'nS'DDS'nDPmgR nDnPPnDPmgRS 
+S'nS'DDS'nDPmgRS 
+n.n. SS gg mm PP nn S'S' 
+S'S' nn DD PP mm gg RR SS 
+n.Sg Sgm gmP mPn PnS' nS'g' S'g'm' 
+S'nD nDP DPm Pmg mgR gRS RSn. Sn.D. 
+n.Sgm SgmP gmPn mPnS' PnS'g' nS'g'm' S'g'm'P' 
+S'nDP nDPm DPmg PmgR mgRS gRSn. RSn.D. Sn.D.P. 
+n.gS Smg gPm mnP PS'n ng'S' S'm'g' 
+S'Dn nPD DmP Pgm mRg gSR Rn.S SD.n. 
+n.SSn. SggS gmmg mPPm PnnP nS'S'n S'g'g'S' 
+S'nnS' nDDn DPPD PmmP mggm gRRg RSSR Sn.n.S 
+n.Sg n.gS Sn.g Sgn. gn.S gSn. 
+Sgm Smg gSm gmS mSg mgS 
+gmP gPm mgP mPg Pgm Pmg 
+mPn mnP Pmn Pnm nmP nPm 
+PnS' PS'n nPS' nS'P S'Pn S'nP 
+nS'g' ng'S' S'ng' S'g'n g'nS' g'S'n 
+S'g'm' S'm'g' g'S'm' g'm'S' m'S'g' m'g'S' 
+S'nD S'Dn nS'D nDS' DS'n DnS' 
+nDP nPD DnP DPn PnD PDn 
+DPm DmP PDm PmD mDP mPD 
+Pmg Pgm mPg mgP gPm gmP 
+mgR mRg gmR gRm Rmg Rgm 
+gRS gSR RgS RSg SgR SRg 
+RSn. Rn.S SRn. Sn.R n.RS n.SR 
+Sn.D. SD.n. n.SD. n.D.S D.Sn. D.n.S 
