@@ -1,0 +1,5 @@
+1. Connect to a private GSheet
+   https://docs.streamlit.io/knowledge-base/tutorials/databases/private-gsheet
+2. User Feedback Page. Collect user feedback in the GSheet
+3. Log Users in the GSheet
+4. Move the Data Model to GSheet
