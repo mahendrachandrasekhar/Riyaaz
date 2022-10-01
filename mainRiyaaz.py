@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+from timeit import repeat
 import pandas as pd
 import os
 from datetime import datetime
@@ -56,6 +57,7 @@ def main():
 def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument):
 
     txtstr = ''
+    repeat = False
 
     # Set the pandas options so that they print poperly in the XML files
     pd.set_option('display.max_rows', None)
@@ -98,34 +100,36 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
             if simplePattern:
 
                 for direction in ["Aaroh", "Avaroh"]:
-                    fileOperations.startMeasure(
-                        fout, direction, MeasureNumber, speed)
-                    directionlen = getAarohAvarohLen(CurrentRaag, direction)
+                    for x in [True,repeat]:
+                        if x:
+                            fileOperations.startMeasure(
+                                fout, direction, MeasureNumber, speed)
+                            directionlen = getAarohAvarohLen(CurrentRaag, direction)
 
-                    # Pattern Init
-                    if simplePatternCnt == 0:  # BASIC AAROH AND AVAROH
-                        firstNote = ""
-                        firstXML = ""
-                        strToPrefix = ""
-                    # Pattern type 1-- BEGIN - Aaroh (SS,SR, SG...)
-                    if simplePatternCnt == 1:
-                        firstNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == 1) & (
-                            CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False)
-                        firstXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == firstNote) & (
-                            RaagaTable['Scale'] == Scale)]
-                        strToPrefix = (firstXML['XMLNotation']).to_string(
-                            index=False)
+                            # Pattern Init
+                            if simplePatternCnt == 0:  # BASIC AAROH AND AVAROH
+                                firstNote = ""
+                                firstXML = ""
+                                strToPrefix = ""
+                            # Pattern type 1-- BEGIN - Aaroh (SS,SR, SG...)
+                            if simplePatternCnt == 1:
+                                firstNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == 1) & (
+                                    CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False)
+                                firstXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == firstNote) & (
+                                    RaagaTable['Scale'] == Scale)]
+                                strToPrefix = (firstXML['XMLNotation']).to_string(
+                                    index=False)
 
-                    for a in range(directionlen):
-                        currPattern = getCurrentPattern(a + 1, directionlen)
-                        CurrentNote = fileOperations.findAndWriteCurrentNoteWithPrefix(
-                            fout, CurrentRaag, currPattern, direction, strToPrefix, RaagaTable, Scale, speed)
-                        fileOperations.writeEmptyNote(fout, RaagaTable, speed)
-                        txtstr = txtstr + firstNote + CurrentNote + ' '
+                            for a in range(directionlen):
+                                currPattern = getCurrentPattern(a + 1, directionlen)
+                                CurrentNote = fileOperations.findAndWriteCurrentNoteWithPrefix(
+                                    fout, CurrentRaag, currPattern, direction, strToPrefix, RaagaTable, Scale, speed)
+                                fileOperations.writeEmptyNote(fout, RaagaTable, speed)
+                                txtstr = txtstr + firstNote + CurrentNote + ' '
 
-                    txtstr = fileOperations.endMeasure(fout, fouttxt, txtstr)
-                    MeasureNumber += 1
-            simplePatternCnt += 1
+                            txtstr = fileOperations.endMeasure(fout, fouttxt, txtstr)
+                            MeasureNumber += 1
+                simplePatternCnt += 1
         ##########################################
         ##########################################
         if includeBasicPattern3:

@@ -45,8 +45,26 @@ def initializeFile(xmlHandle, Raag, instrument):
 
     if instrument == 'Reed Organ':
         xmlHandle.write('      <midi-program>21</midi-program>\n')
-    elif instrument == 'Piano':
-        xmlHandle.write('      <midi-program>1</midi-program>\n')
+    elif instrument == 'Harmonica':
+        xmlHandle.write('      <midi-program>23</midi-program>\n')
+    elif instrument == 'Harp':
+        xmlHandle.write('      <midi-program>47</midi-program>\n')
+    elif instrument == 'Voice':
+        xmlHandle.write('      <midi-program>55</midi-program>\n')
+    elif instrument == 'Koto':
+        xmlHandle.write('      <midi-program>108</midi-program>\n')
+    elif instrument == 'Shenai':
+        xmlHandle.write('      <midi-program>112</midi-program>\n')
+    elif instrument == 'Violin':
+        xmlHandle.write('      <midi-program>41</midi-program>\n')
+    elif instrument == 'Sitar':
+        xmlHandle.write('      <midi-program>105</midi-program>\n')
+    elif instrument == 'Cello':
+        xmlHandle.write('      <midi-program>43</midi-program>\n')
+    elif instrument == 'Ukulele':
+        xmlHandle.write('      <midi-program>25</midi-program>\n')
+    elif instrument == 'Guitar':
+        xmlHandle.write('      <midi-program>26</midi-program>\n')
     else:
         xmlHandle.write('      <midi-program>21</midi-program>\n')
 

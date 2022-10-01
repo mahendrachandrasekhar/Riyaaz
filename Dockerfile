@@ -19,7 +19,7 @@ RUN strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so
 RUN pip install streamlit
 RUN pip3 install jinja2==3.0.1
 RUN apt install git -y
-RUN echo "version 1.2"
+RUN echo "version 1.4"
 RUN git clone https://github.com/mahendrachandrasekhar/Riyaaz.git
 WORKDIR /Riyaaz
 ENTRYPOINT ["streamlit", "run", "renderRiyaaz.py", "--server.port=8501", "--server.address=0.0.0.0"]

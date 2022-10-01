@@ -9,10 +9,10 @@ instrument = ""
 currTime = datetime.now()
 
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
-tab1, tab2, tab3, tab4 = st.tabs(["Main", "Notations", "How To Use","Contact"])
+tab1, tab2, tab3, tab4 = st.tabs(["Main", "Notations", "How To Use","Feedback"])
 with tab1:
     with st.form(key='my_form'):
-        cols1 = st.columns(3)
+        cols1 = st.columns(4)
         for i, col1 in enumerate(cols1):
            if i == 0:
                inputRaag = col1.selectbox('Select the Raaga',('AhirBhairav','Bhairav','Bhairavi','Bhimpalasi','Bhoopali','Bhupeshwari','Bihag','Bilawal','Charukeshi','Keerwani','Khamaj','Malkauns','Rageshree','Shivranjini','Todi','Vibhas','Yaman'),index=7,key="inputRaag")
@@ -20,6 +20,8 @@ with tab1:
                inputPitch = col1.selectbox('Select the Pitch',('A','A#','B','C','C#','D','D#','E','F','F#','G','G#'),index=4,key="inputPitch")
            elif i == 2:
                speed = col1.selectbox('Select the Speed',('64th','32nd','16th','eighth','quarter','half'),index=4,key="speed")
+           elif i == 3:
+               instrument = col1.selectbox('Select the Instrument',('Reed Organ','Harmonica','Harp','Voice','Koto','Shenai','Violin','Sitar','Cello','Ukulele','Guitar'),index=0,key="instrument")
             
         cols2 = st.columns(1)
         for i, col2 in enumerate(cols2):
