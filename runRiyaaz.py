@@ -1,6 +1,6 @@
 import getopt
 import os
-import Riyaaz
+import mainRiyaaz
 import sys
 
 try:
@@ -55,7 +55,7 @@ for opt, arg in opts:
     elif opt in ("-i", "--instrument"):
         instrument = arg
 
-Riyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
+mainRiyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
 
 ##python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeLibraryPaltas False --inputPattern '' --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"
 ##python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"

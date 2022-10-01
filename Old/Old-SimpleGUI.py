@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 import warnings
 import textwrap
 import os
-import Riyaaz
+import mainRiyaaz
 
 def main():
     warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -82,7 +82,7 @@ def main():
         print('merukhandPattern     = ' + values['merukhandPattern'])
         print('instrument           = ' + instrument          )
         
-        Riyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
+        mainRiyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
         
         sg.Popup('Success','Your files are generated in the output directory.Please open the PDF and the MP3 to sing along')
     window.close()

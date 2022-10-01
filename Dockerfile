@@ -22,5 +22,5 @@ RUN apt install git -y
 RUN echo "version 1.2"
 RUN git clone https://github.com/mahendrachandrasekhar/Riyaaz.git
 WORKDIR /Riyaaz
-ENTRYPOINT ["streamlit", "run", "SujaanRiyaaz.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "renderRiyaaz.py", "--server.port=8501", "--server.address=0.0.0.0"]
 EXPOSE 8501

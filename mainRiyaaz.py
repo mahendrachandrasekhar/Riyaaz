@@ -13,7 +13,7 @@ def cleanupFile(filename):
 
 def getRaagList(myRaag):
     if myRaag == '':
-        myRaagList = pd.read_csv("RaagaList.csv")
+        myRaagList = pd.read_csv("Data-RaagaList.csv")
     else:
         d = {'RaagaName': [myRaag]}
         myRaagList = pd.DataFrame(data=d)
@@ -39,6 +39,9 @@ def getCurrentPattern(n,len):
    else:
        return n
 
+def main():
+   print('Do Nothing')
+
 def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument):
     
     txtstr = ''
@@ -58,8 +61,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     
     #Get the Raaga table
-    RaagaTable = pd.read_csv("RaagasNotationsAndMusicXMLNotations.csv")
-    AarohAvaroh = getAarohAvaroh("Aaroh-Avaroh-Basic.csv","Aaroh-Avaroh-Extension.csv")
+    RaagaTable = pd.read_csv("Data-RaagasNotationsAndMusicXMLNotations.csv")
+    AarohAvaroh = getAarohAvaroh("Data-Aaroh-Avaroh-Basic.csv","Data-Aaroh-Avaroh-Extension.csv")
     RaagList = getRaagList(inputRaag)
     
     ##############
@@ -250,7 +253,7 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
         ##########################################
 
         if includeBasicPaltas:
-            BasicPaltaList = pd.read_csv("ListOfBasicPaltas.csv")
+            BasicPaltaList = pd.read_csv("Data-ListOfBasicPaltas.csv")
             for palta in BasicPaltaList['PatlaNotation']:
                 Pattern=str(palta)
                 patternLen = len(Pattern)
@@ -361,7 +364,7 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
         if includePaltas:
             try:
                 if includeLibraryPaltas:
-                    PaltaList1 = pd.read_csv("ListOfPaltas.csv")
+                    PaltaList1 = pd.read_csv("Data-ListOfPaltas.csv")
                 if inputPattern != '':
                     newPattern = []
                     for p in (inputPattern.split('\n')):

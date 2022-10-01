@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-import Riyaaz
+import mainRiyaaz
 #st.image("Sujaan.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 st.set_page_config(page_title='Daily Riyaaz')
 
@@ -68,7 +68,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 ########
 if submitted:
     with st.spinner("Wait for it don't click Submit again..."):
-        Riyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
+        mainRiyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
         audio_file = open(outFileSuffix+'.mp3', 'rb')
         audio_bytes = audio_file.read()
         st.audio(audio_bytes, format='audio/mp3')
@@ -77,4 +77,4 @@ if submitted:
         for pattern in txtOutput[0]:
             st.text(pattern)
 
-    Riyaaz.cleanupFile(outFileSuffix)         
+    mainRiyaaz.cleanupFile(outFileSuffix)         
