@@ -54,7 +54,7 @@ with tab2:
 with tab3:
     st.image("HowToUseTheApplication.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 with tab4:
-    st.text('For Ideas & Suggestions, Contact: Mahendra Chandrasekhar, mahendracc@hotmail.com')
+    st.write('For Ideas & Suggestions, Contact: Mahendra Chandrasekhar, mahendracc@hotmail.com')
     #st.text('Follow Sujaan Music: https://www.facebook.com/sujaanmusic/')
 
 ###Formatting Options
@@ -77,6 +77,6 @@ if submitted:
         
         txtOutput = pd.read_csv(outFileSuffix+".csv",header=None)
         for pattern in txtOutput[0]:
-            st.text(pattern)
+            st.write(pattern)
 
     mainRiyaaz.cleanupFile(outFileSuffix)         
