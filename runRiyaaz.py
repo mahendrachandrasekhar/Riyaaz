@@ -4,9 +4,10 @@ import mainRiyaaz
 import sys
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"hp:o:s:r:l:t:a:x:y:b:m:k:i:",["inputPitch=", "outFileSuffix=", "speed=", "inputRaag=", "includeLibraryPaltas=", "inputPattern=", "includeAarohAvaroh=", "includeBasicPattern2=", "includeBasicPattern3=", "includeBasicPaltas=", "includeMerukhand=", "merukhandPattern=", "instrument="])
+    opts, args = getopt.getopt(sys.argv[1:], "hp:o:s:r:l:t:a:x:y:b:m:k:i:", ["inputPitch=", "outFileSuffix=", "speed=", "inputRaag=", "includeLibraryPaltas=", "inputPattern=",
+                               "includeAarohAvaroh=", "includeBasicPattern2=", "includeBasicPattern3=", "includeBasicPaltas=", "includeMerukhand=", "merukhandPattern=", "instrument="])
 except getopt.GetoptError:
-    print ('GeneratePalta.py -p <Pitch> -o <OutputFileSuffix> -s <Speed>')
+    print('GeneratePalta.py -p <Pitch> -o <OutputFileSuffix> -s <Speed>')
     sys.exit(2)
 
 
@@ -26,7 +27,7 @@ instrument = ''
 
 for opt, arg in opts:
     if opt == '-h':
-        print ('GeneratePalta.py -p Pitch -o OutputFileSuffix - s Speed')
+        print('GeneratePalta.py -p Pitch -o OutputFileSuffix - s Speed')
         sys.exit()
     elif opt in ("-p", "--inputPitch"):
         inputPitch = arg
@@ -55,9 +56,10 @@ for opt, arg in opts:
     elif opt in ("-i", "--instrument"):
         instrument = arg
 
-mainRiyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
+mainRiyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh,
+               includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
 
-##python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeLibraryPaltas False --inputPattern '' --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"
-##python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"
-##python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeLibraryPaltas False --inputPattern '' --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeBasicPaltas True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"
-##python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ" --includeBasicPaltas True
+# python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeLibraryPaltas False --inputPattern '' --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"
+# python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"
+# python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeLibraryPaltas False --inputPattern '' --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeBasicPaltas True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ"
+# python runRiyaaz.py --inputPitch C# --outFileSuffix g --speed quarter --inputRaag Bilawal --includeAarohAvaroh True --includeBasicPattern2 True --includeBasicPattern3 True --includeMerukhand False --merukhandPattern "" --instrument "Reed Organ" --includeBasicPaltas True
