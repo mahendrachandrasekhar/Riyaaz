@@ -20,12 +20,14 @@ RUN pip install streamlit
 RUN pip install streamlit-ext
 RUN pip3 install jinja2==3.0.1
 RUN apt install git -y
-RUN echo "version 1.5"
+RUN pip install gspread
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 RUN git clone https://github.com/mahendrachandrasekhar/Riyaaz.git
 RUN mkdir .config
 RUN cd .config
 RUN mkdir gspread
 RUN cd gspread
+COPY /.config/gspread/service_account.json /Riyaaz/.config/gspread/service_account.json
 WORKDIR /Riyaaz
 ENTRYPOINT ["streamlit", "run", "renderRiyaaz.py", "--server.port=8501", "--server.address=0.0.0.0"]
 EXPOSE 8501

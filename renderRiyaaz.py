@@ -8,8 +8,8 @@ from google.auth.transport.requests import AuthorizedSession
 import pandas as pd
 from datetime import datetime
 import mainRiyaaz
-#st.image("Sujaan.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 st.set_page_config(page_title='Daily Riyaaz')
+st.image("Riyaaz.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 
 instrument = ""
 currTime = datetime.now()
@@ -61,8 +61,8 @@ with tab3:
     st.image("HowToUseTheApplication.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 with tab4:
     with st.form(key='feedback'):
-        st.write('For Ideas & Suggestions, Contact: Mahendra Chandrasekhar, mahendracc@hotmail.com')
-        email = st.text_input("Your Email",key="email")
+        st.write('For Ideas & Suggestions, Contact: Mahendra Chandrasekhar, mahendracc@hotmail.com, or enter your feedback below')
+        email = st.text_input("Your Name/Email",key="email")
         feedback = st.text_area("Your Feedback", value="", height=None, max_chars=None, key="feedback")
         #st.text('Follow Sujaan Music: https://www.facebook.com/sujaanmusic/')
         feedback_given = st.form_submit_button('Submit')
@@ -77,23 +77,26 @@ hide_st_style = """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 if feedback_given:
-    scopes = [
-       'https://www.googleapis.com/auth/spreadsheets',
-       'https://www.googleapis.com/auth/drive'
-    ]
-    credentials = service_account.Credentials.from_service_account_file('.config/gspread/service_account.json')
+    if len(email) < 3 and len(feedback) < 4:
+        st.write("No Text Entered or text too small")
+    else:
+        scopes = [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/drive'
+        ]
+        credentials = service_account.Credentials.from_service_account_file('.config/gspread/service_account.json')
 
-    scoped_credentials = credentials.with_scopes(
-        ['https://spreadsheets.google.com/feeds',
-         'https://www.googleapis.com/auth/drive']
-        )
-    gc = gspread.Client(auth=scoped_credentials)
-    gc.session = AuthorizedSession(scoped_credentials)
+        scoped_credentials = credentials.with_scopes(
+            ['https://spreadsheets.google.com/feeds',
+            'https://www.googleapis.com/auth/drive']
+            )
+        gc = gspread.Client(auth=scoped_credentials)
+        gc.session = AuthorizedSession(scoped_credentials)
 
-    sh = gc.open("Riyaaz Feedback")
-    mysheet = sh.worksheet("Sheet1")
-    mysheet.append_row([email,feedback])
-
+        sh = gc.open("Riyaaz Feedback")
+        mysheet = sh.worksheet("Feedback")
+        mysheet.append_row([email,feedback])
+        st.write("Thank you for your feedback")
 
 
 ########
