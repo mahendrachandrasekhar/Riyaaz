@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit_ext as ste
 import gspread
+import os
 from google.oauth2 import service_account
 from google.auth.transport.requests import AuthorizedSession
 #https://docs.gspread.org/en/latest/oauth2.html#for-bots-using-service-account
@@ -25,7 +26,7 @@ with tab1:
            elif i == 1:
                inputPitch = col1.selectbox('Select the Pitch',('A','A#','B','C','C#','D','D#','E','F','F#','G','G#'),index=4,key="inputPitch")
            elif i == 2:
-               speed = col1.selectbox('Select the Speed',('64th','32nd','16th','eighth','quarter','half'),index=4,key="speed")
+               speed = col1.selectbox('Select the Speed',('64th','32nd','16th','eighth','quarter','half'),index=3,key="speed")
            elif i == 3:
                instrument = col1.selectbox('Select the Instrument',('Reed Organ','Harmonica','Harp','Voice','Koto','Shenai','Violin','Sitar','Cello','Ukulele','Guitar'),index=0,key="instrument")
             
@@ -107,10 +108,13 @@ if submitted:
         audio_bytes = audio_file.read()
         st.audio(audio_bytes, format='audio/mp3')
         
-        txtOutput = pd.read_csv(outFileSuffix+".csv",header=None)
-        ste.download_button("Download notations as CSV", txtOutput.to_csv().encode('utf-8'), "Notations.csv")
-        csv = txtOutput.to_csv().encode('utf-8')
-        for pattern in txtOutput[0]:
+        txtOutput = open(outFileSuffix+".csv","r")
+        ste.download_button("Download notations as TXT", txtOutput.read(), "Notations.txt")
+        txtOutput.close()
+
+        txtOutput = open(outFileSuffix+".csv","r")
+        for pattern in txtOutput.readlines():
             st.write(pattern)
+        txtOutput.close()
 
     mainRiyaaz.cleanupFile(outFileSuffix)         
