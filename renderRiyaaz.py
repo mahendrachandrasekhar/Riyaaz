@@ -14,7 +14,7 @@ st.image("Riyaaz.png", caption=None, width=500, use_column_width=True, clamp=Fal
 
 instrument = ""
 currTime = datetime.now()
-
+st.error("The site will be taken down soon..If you would like to keep it up, please leave your feedback in the Feedback tab. f there is enough of a demand, we will continue to support the site.")
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4 = st.tabs(["Main", "Notations", "How To Use","Feedback"])
 with tab1:
@@ -62,11 +62,11 @@ with tab3:
     st.image("HowToUseTheApplication.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 with tab4:
     with st.form(key='feedback'):
-        st.write('For Ideas & Suggestions, Contact: Mahendra Chandrasekhar, mahendracc@hotmail.com, or enter your feedback below')
+        st.error('For Ideas & Suggestions, Contact: Mahendra Chandrasekhar, mahendracc@hotmail.com, or enter your feedback below')
         email = st.text_input("Your Name/Email",key="email")
         feedback = st.text_area("Your Feedback", value="", height=None, max_chars=None, key="feedback")
         #st.text('Follow Sujaan Music: https://www.facebook.com/sujaanmusic/')
-        feedback_given = st.form_submit_button('Submit')
+        feedback_given = st.form_submit_button('Send Feedback')
 ###Formatting Options
 hide_st_style = """
             <style>
@@ -102,7 +102,7 @@ if feedback_given:
 
 ########
 if submitted:
-    with st.spinner("Wait for it don't click Submit again..."):
+    with st.spinner("Wait for it don't click Submit again. Meanwhile you can put in your feedback in the Feedback Tab..."):
         mainRiyaaz.run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, inputPattern, includeAarohAvaroh, includeBasicPattern2, includeBasicPattern3, includeBasicPaltas, includeMerukhand, merukhandPattern, instrument)
         audio_file = open(outFileSuffix+'.mp3', 'rb')
         audio_bytes = audio_file.read()
