@@ -14,7 +14,8 @@ st.image("Riyaaz.png", caption=None, width=500, use_column_width=True, clamp=Fal
 
 instrument = ""
 currTime = datetime.now()
-st.error("The site will be taken down soon..If you would like to keep it up, please leave your feedback in the Feedback tab. f there is enough of a demand, we will continue to support the site.")
+##st.error("The site will be taken down soon..If you would like to keep it up, please leave your feedback in the Feedback tab. f there is enough of a demand, we will continue to support the site.")
+st.error("Please leave your feedback in the Feedback tab so that the team knows that they need to continue to support the site.")
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4 = st.tabs(["Main", "Notations", "How To Use","Feedback"])
 with tab1:
