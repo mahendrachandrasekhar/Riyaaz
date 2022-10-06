@@ -29,5 +29,5 @@ RUN mkdir gspread
 RUN cd gspread
 COPY /.config/gspread/service_account.json /Riyaaz/.config/gspread/service_account.json
 WORKDIR /Riyaaz
-ENTRYPOINT ["streamlit", "run", "renderRiyaaz.py", "--server.port=8501", "--server.address=0.0.0.0"]
-EXPOSE 8501
+ENTRYPOINT ["streamlit", "run", "renderRiyaaz.py", "--server.port=8502", "--server.address=0.0.0.0"]
+EXPOSE 8502
