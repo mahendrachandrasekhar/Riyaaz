@@ -87,7 +87,7 @@ def startMeasure(xmlHandle, header, myMeasure, myspeed):
 
 def writeEmptyNote(xmlHandle, lookupTable, myspeed):
     xmlLookup = lookupTable.loc[(lookupTable['LyricalNote'] == 'Z')]
-    myStrToWrite = (xmlLookup['XMLNotation']).to_string(index=False)
+    myStrToWrite = (xmlLookup['XMLNotation']).to_string(index=False).strip()
     xmlHandle.write(myStrToWrite.replace(
         "begin", "end").replace("eighth", myspeed))
     xmlHandle.write('\n')
@@ -95,10 +95,10 @@ def writeEmptyNote(xmlHandle, lookupTable, myspeed):
 
 def findAndWriteCurrentNoteWithPrefix(xmlHandle, myRaag, currPattern, Aaroh_Or_Avaroh, myStrToPrefix, myRaagaTable, myScale, mySpeed):
     myNote = ((myRaag.loc[(myRaag['Sequence'] == currPattern) & (
-        myRaag['Aaroh_Avaroh'] == Aaroh_Or_Avaroh)])['LyricalNote']).to_string(index=False)
+        myRaag['Aaroh_Avaroh'] == Aaroh_Or_Avaroh)])['LyricalNote']).to_string(index=False).strip()
     myXML = myRaagaTable.loc[(myRaagaTable['LyricalNote'] == myNote) & (
         myRaagaTable['Scale'] == myScale)]
-    myStrToWrite = (myXML['XMLNotation']).to_string(index=False)
+    myStrToWrite = (myXML['XMLNotation']).to_string(index=False).strip()
     xmlHandle.write(myStrToPrefix.replace("eighth", mySpeed) +
                     myStrToWrite.replace("begin", "end").replace("eighth", mySpeed))
     return myNote

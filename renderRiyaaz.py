@@ -1,3 +1,4 @@
+from operator import mod
 import streamlit as st
 import streamlit_ext as ste
 import gspread
@@ -14,26 +15,34 @@ st.image("Riyaaz.png", caption=None, width=500, use_column_width=True, clamp=Fal
 
 instrument = ""
 currTime = datetime.now()
+RaagaList = pd.read_csv("Data-RaagaList.csv")
+SpeedList = pd.read_csv("Data-SpeedList.csv")
+PitchList = pd.read_csv("Data-PitchList.csv")
+InstrumentList = pd.read_csv("Data-InstrumentList.csv")
+
 ##st.error("The site will be taken down soon..If you would like to keep it up, please leave your feedback in the Feedback tab. f there is enough of a demand, we will continue to support the site.")
 st.error("Please leave your feedback in the Feedback tab so that the team knows that they need to continue to support the site.")
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
-tab1, tab2, tab3, tab4 = st.tabs(["Main", "Notations", "How To Use","Feedback"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Main", "Notations", "How To Use","Feedback","Instrument Samples"])
 with tab1:
     with st.form(key='my_form'):
         cols1 = st.columns(4)
         for i, col1 in enumerate(cols1):
            if i == 0:
-               inputRaag = col1.selectbox('Select the Thaat/Raaga',('Asavari','Bilawal','Bhairav','Bhairavi','Kalyan','Khamaj-Thaat','Kafi','Marva','Poorvi','Todi','AhirBhairav','Bhimpalasi','Bhoopali','Bhupeshwari','Bihag','Charukeshi','Keerwani','Khamaj','Malkauns','Rageshree','Shivranjini','Vibhas','Yaman'),index=1,key="inputRaag")
+               inputRaag = col1.selectbox('Thaat/Raaga',RaagaList,index=1,key="inputRaag")
            elif i == 1:
-               inputPitch = col1.selectbox('Select the Pitch',('A','A#','B','C','C#','D','D#','E','F','F#','G','G#'),index=4,key="inputPitch")
+               inputPitch = col1.selectbox('Pitch',PitchList,index=4,key="inputPitch")
            elif i == 2:
-               speed = col1.selectbox('Select the Speed',('64th','32nd','16th','eighth','quarter','half'),index=3,key="speed")
+               speed = col1.selectbox('Speed',SpeedList,index=3,key="speed")
            elif i == 3:
-               instrument = col1.selectbox('Select the Instrument',('Reed Organ','Harmonica','Harp','Voice','Koto','Shenai','Violin','Sitar','Cello','Ukulele','Guitar'),index=0,key="instrument")
-            
+               instrument = col1.selectbox('Instrument',InstrumentList,index=0,key="instrument")
+
+
         cols2 = st.columns(1)
         for i, col2 in enumerate(cols2):
-            col2.markdown('#### _Pick Pre-Defined Patterns_')
+            if i == 0:
+                col2.markdown('#### _Pick Pre-Defined Patterns_')
+
         cols3 = st.columns(2)
         for i, col in enumerate(cols3):
            if i == 0:
@@ -68,6 +77,29 @@ with tab4:
         feedback = st.text_area("Your Feedback", value="", height=None, max_chars=None, key="feedback")
         #st.text('Follow Sujaan Music: https://www.facebook.com/sujaanmusic/')
         feedback_given = st.form_submit_button('Send Feedback')
+with tab5:
+        cols6 = st.columns(2)
+        myLen = len(InstrumentList["InstrumentName"])
+        for i, col6 in enumerate(cols6):
+            if i == 0:
+                currLen = 0
+                for myinstrument in InstrumentList["InstrumentName"]:
+                    if currLen%2 == 0:
+                        col6.write(myinstrument)
+                        r_audio_file = open("InstrumentSamples/"+myinstrument+'.mp3', 'rb')
+                        r_audio_bytes = r_audio_file.read()
+                        col6.audio(r_audio_bytes, format='audio/mp3')
+                    currLen +=1
+            if i == 1:
+                currLen = 0
+                for myinstrument in InstrumentList["InstrumentName"]:
+                    if currLen%2 == 1:
+                        col6.write(myinstrument)
+                        r_audio_file = open("InstrumentSamples/"+myinstrument+'.mp3', 'rb')
+                        r_audio_bytes = r_audio_file.read()
+                        col6.audio(r_audio_bytes, format='audio/mp3')
+                    currLen +=1
+
 ###Formatting Options
 hide_st_style = """
             <style>
