@@ -77,28 +77,28 @@ with tab4:
         feedback = st.text_area("Your Feedback", value="", height=None, max_chars=None, key="feedback")
         #st.text('Follow Sujaan Music: https://www.facebook.com/sujaanmusic/')
         feedback_given = st.form_submit_button('Send Feedback')
-with tab5:
-        cols6 = st.columns(2)
-        myLen = len(InstrumentList["InstrumentName"])
-        for i, col6 in enumerate(cols6):
-            if i == 0:
-                currLen = 0
-                for myinstrument in InstrumentList["InstrumentName"]:
-                    if currLen%2 == 0:
-                        col6.write(myinstrument)
-                        r_audio_file = open("InstrumentSamples/"+myinstrument+'.mp3', 'rb')
-                        r_audio_bytes = r_audio_file.read()
-                        col6.audio(r_audio_bytes, format='audio/mp3')
-                    currLen +=1
-            if i == 1:
-                currLen = 0
-                for myinstrument in InstrumentList["InstrumentName"]:
-                    if currLen%2 == 1:
-                        col6.write(myinstrument)
-                        r_audio_file = open("InstrumentSamples/"+myinstrument+'.mp3', 'rb')
-                        r_audio_bytes = r_audio_file.read()
-                        col6.audio(r_audio_bytes, format='audio/mp3')
-                    currLen +=1
+# with tab5:
+#         cols6 = st.columns(2)
+#         myLen = len(InstrumentList["InstrumentName"])
+#         for i, col6 in enumerate(cols6):
+#             if i == 0:
+#                 currLen = 0
+#                 for myinstrument in InstrumentList["InstrumentName"]:
+#                     if currLen%2 == 0:
+#                         col6.write(myinstrument)
+#                         r_audio_file = open("InstrumentSamples/"+myinstrument+'.mp3', 'rb')
+#                         r_audio_bytes = r_audio_file.read()
+#                         col6.audio(r_audio_bytes, format='audio/mp3')
+#                     currLen +=1
+#             if i == 1:
+#                 currLen = 0
+#                 for myinstrument in InstrumentList["InstrumentName"]:
+#                     if currLen%2 == 1:
+#                         col6.write(myinstrument)
+#                         r_audio_file = open("InstrumentSamples/"+myinstrument+'.mp3', 'rb')
+#                         r_audio_bytes = r_audio_file.read()
+#                         col6.audio(r_audio_bytes, format='audio/mp3')
+#                     currLen +=1
 
 ###Formatting Options
 hide_st_style = """
