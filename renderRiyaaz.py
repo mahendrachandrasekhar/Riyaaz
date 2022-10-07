@@ -1,27 +1,31 @@
 from operator import mod
 import streamlit as st
 import streamlit_ext as ste
-import gspread
+import gsheetData
 import os
-from google.oauth2 import service_account
-from google.auth.transport.requests import AuthorizedSession
-#https://docs.gspread.org/en/latest/oauth2.html#for-bots-using-service-account
 
 import pandas as pd
 from datetime import datetime
 import mainRiyaaz
+
 st.set_page_config(page_title='Daily Riyaaz')
 st.image("Riyaaz.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 
 instrument = ""
 currTime = datetime.now()
-RaagaList = pd.read_csv("Data-RaagaList.csv")
-SpeedList = pd.read_csv("Data-SpeedList.csv")
-PitchList = pd.read_csv("Data-PitchList.csv")
-InstrumentList = pd.read_csv("Data-InstrumentList.csv")
+
+RaagaList = gsheetData.get_gsheet("RaagaList")
+SpeedList = gsheetData.get_gsheet("SpeedList")
+PitchList = gsheetData.get_gsheet("PitchList")
+InstrumentList = gsheetData.get_gsheet("InstrumentList")
+
+#RaagaList = pd.read_csv("Data-RaagaList.csv")
+#SpeedList = pd.read_csv("Data-SpeedList.csv")
+#PitchList = pd.read_csv("Data-PitchList.csv")
+#InstrumentList = pd.read_csv("Data-InstrumentList.csv")
 
 ##st.error("The site will be taken down soon..If you would like to keep it up, please leave your feedback in the Feedback tab. f there is enough of a demand, we will continue to support the site.")
-st.error("Site will be taken down this weekend (9-Oct-2022). Please leave your feedback in the Feedback tab or contact me - mahendracc@hotmail.com in you need this app. It is free to use for everyone.")
+st.error("Site will be taken down this weekend (9-Oct-2022). Please leave your feedback in the Feedback tab or contact me - mahendracc@hotmail.com in case you need this app to be up. It is free to use for everyone and I am heppy to keep it up if there is a need.")
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Main", "Notations", "How To Use","Feedback","Instrument Samples"])
 with tab1:
@@ -114,22 +118,7 @@ if feedback_given:
     if len(email) < 3 and len(feedback) < 4:
         st.write("No Text Entered or text too small")
     else:
-        scopes = [
-        'https://www.googleapis.com/auth/spreadsheets',
-        'https://www.googleapis.com/auth/drive'
-        ]
-        credentials = service_account.Credentials.from_service_account_file('.config/gspread/service_account.json')
-
-        scoped_credentials = credentials.with_scopes(
-            ['https://spreadsheets.google.com/feeds',
-            'https://www.googleapis.com/auth/drive']
-            )
-        gc = gspread.Client(auth=scoped_credentials)
-        gc.session = AuthorizedSession(scoped_credentials)
-
-        sh = gc.open("Riyaaz Feedback")
-        mysheet = sh.worksheet("Feedback")
-        mysheet.append_row([email,feedback])
+        gsheetData.set_gsheet("Feedback",[email,feedback])
         st.write("Thank you for your feedback")
 
 

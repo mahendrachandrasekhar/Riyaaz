@@ -8,7 +8,7 @@ from datetime import date
 from subprocess import check_output
 import helperFunctions
 import fileOperations
-
+import gsheetData
 
 def cleanupFile(filename):
     check_output('rm ' + filename+'.* ', shell=True)
@@ -16,7 +16,8 @@ def cleanupFile(filename):
 
 def getRaagList(myRaag):
     if myRaag == '':
-        myRaagList = pd.read_csv("Data-RaagaList.csv")
+        #myRaagList = pd.read_csv("Data-RaagaList.csv")
+        myRaagList = gsheetData.get_gsheet("RaagaList")
     else:
         d = {'RaagaName': [myRaag]}
         myRaagList = pd.DataFrame(data=d)
@@ -25,11 +26,13 @@ def getRaagList(myRaag):
 
 def getAarohAvaroh(basicFileName, extensionFileName):
     # Get the basic Aaroh Avaroh
-    AarohAvarohBasic = pd.read_csv(basicFileName)
+    #AarohAvarohBasic = pd.read_csv(basicFileName)
+    AarohAvarohBasic = gsheetData.get_gsheet(basicFileName)
     AarohAvarohBasic.drop('Notation', axis=1, inplace=True)
 
     # Get the Aaroh Avaroh including the next Octave.
-    AarohAvarohExtended = pd.read_csv(extensionFileName)
+    #AarohAvarohExtended = pd.read_csv(extensionFileName)
+    AarohAvarohExtended = gsheetData.get_gsheet(extensionFileName)
     # The File template used will generate blank rows, so remove it out
     AarohAvarohExtended.drop(AarohAvarohExtended.index[(
         AarohAvarohExtended["Raag"].isnull())], axis=0, inplace=True)
@@ -75,9 +78,10 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
     # Get the Raaga table
-    RaagaTable = pd.read_csv("Data-RaagasNotationsAndMusicXMLNotations.csv")
-    AarohAvaroh = getAarohAvaroh(
-        "Data-Aaroh-Avaroh-Basic.csv", "Data-Aaroh-Avaroh-Extension.csv")
+    #RaagaTable = pd.read_csv("Data-RaagasNotationsAndMusicXMLNotations.csv")
+    RaagaTable = gsheetData.get_gsheet("RaagasNotationsAndMusicXMLNotations")
+    #AarohAvaroh = getAarohAvaroh("Data-Aaroh-Avaroh-Basic.csv", "Data-Aaroh-Avaroh-Extension.csv")
+    AarohAvaroh = getAarohAvaroh("Aaroh-Avaroh-Basic", "Aaroh-Avaroh-Extension")
     RaagList = getRaagList(inputRaag)
     Scale = inputPitch
 
@@ -185,7 +189,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
         ##########################################
 
         if includeBasicPaltas:
-            BasicPaltaList = pd.read_csv("Data-ListOfBasicPaltas.csv")
+            #BasicPaltaList = pd.read_csv("Data-ListOfBasicPaltas.csv")
+            BasicPaltaList = gsheetData.get_gsheet("ListOfBasicPaltas")
             for palta in BasicPaltaList['PatlaNotation']:
                 Pattern = str(palta)
                 patternLen = len(Pattern)
@@ -256,7 +261,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
         if includePaltas:
             try:
                 if includeLibraryPaltas:
-                    PaltaList1 = pd.read_csv("Data-ListOfPaltas.csv")
+                    #PaltaList1 = pd.read_csv("Data-ListOfPaltas.csv")
+                    PaltaList1 = gsheetData.get_gsheet("ListOfPaltas")
                 if inputPattern != '':
                     newPattern = []
                     for p in (inputPattern.split('\n')):
