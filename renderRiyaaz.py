@@ -21,7 +21,7 @@ PitchList = pd.read_csv("Data-PitchList.csv")
 InstrumentList = pd.read_csv("Data-InstrumentList.csv")
 
 ##st.error("The site will be taken down soon..If you would like to keep it up, please leave your feedback in the Feedback tab. f there is enough of a demand, we will continue to support the site.")
-st.error("Please leave your feedback in the Feedback tab so that the team knows that they need to continue to support the site.")
+st.error("Site will be taken down this weekend (9-Oct-2022). Please leave your feedback in the Feedback tab or contact me - mahendracc@hotmail.com in you need this app. It is free to use for everyone.")
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Main", "Notations", "How To Use","Feedback","Instrument Samples"])
 with tab1:
