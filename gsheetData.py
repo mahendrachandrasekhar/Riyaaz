@@ -24,4 +24,4 @@ scoped_credentials = credentials.with_scopes(
     )
 gc = gspread.Client(auth=scoped_credentials)
 gc.session = AuthorizedSession(scoped_credentials)
-sh = gc.open("Riyaaz Feedback")
+sh = gc.open("Riyaaz")
