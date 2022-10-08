@@ -1,4 +1,4 @@
 # Use this app to sing along and practice
-![HowToUseTheApplication](RiyaazArchitecture.png)
+![HowToUseTheApplication](HowToUseTheApplication.png)
 ![RiyaazArchitecture](RiyaazArchitecture.png)
 ![RiyaazDataModel](RiyaazDataModel.png)
