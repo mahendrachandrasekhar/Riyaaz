@@ -1,8 +1,11 @@
 from operator import mod
+from ssl import SSLSession
 import streamlit as st
 import streamlit_ext as ste
+import requests
 import gsheetData
-import os
+#import os
+#import pathlib
 
 import pandas as pd
 from datetime import datetime
@@ -19,6 +22,13 @@ SpeedList = gsheetData.get_gsheet("SpeedList")
 PitchList = gsheetData.get_gsheet("PitchList")
 InstrumentList = gsheetData.get_gsheet("InstrumentList")
 Message = gsheetData.get_gsheet("Message")
+#print(pathlib.Path(__file__).stem)
+#session = requests.Session()
+a = [{"access_token":"ya29.a0Aa4xrXPikdEQhogFcjcKAHu0enZFhidrPvFd5et273BAOsY8p4eYTfWUi13_TOB0U5VWZ9lQGKB5J2KpFMxjGQbpKuBcEAckdQEAWJzKlydWr4QYRNjGr0mZS5RGIgsteUgw49IUhJMhgLJSZlCNrCeZuX2XaCgYKATASARMSFQEjDvL9Jt4yAOtAySCw3ysf03d5DQ0163","expires_on":"2022-10-29T10:19:11.2503730Z","id_token":"eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc3Y2MwZWY0YzcxODFjZjRjMGRjZWY3YjYwYWUyOGNjOTAyMmM3NmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NDkxMzA4NDM0ODQtaDY5cHFlc2s0bmltazQ3N2d0Zmp2ZGxoY2IycWVuOWkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NDkxMzA4NDM0ODQtaDY5cHFlc2s0bmltazQ3N2d0Zmp2ZGxoY2IycWVuOWkuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTE3MzQxNDk4MTQ4MjYwMjUzNTEiLCJlbWFpbCI6InNoaXZnYW5nYTNjaHNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiI5N1VrZmVwcVRLYlFnR2UtRHZldEpRIiwibmFtZSI6IlNoaXYgR2FuZ2EgMyBDSFMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUxtNXd1M3NWbHFXUUg0bzFjMElUaC1WQm1sOW1JM3o4TEhBT2xSd2tLdWI9czk2LWMiLCJnaXZlbl9uYW1lIjoiU2hpdiBHYW5nYSAzIiwiZmFtaWx5X25hbWUiOiJDSFMiLCJsb2NhbGUiOiJlbiIsImlhdCI6MTY2NzAzNTE1MiwiZXhwIjoxNjY3MDM4NzUyfQ.sluv9AiKw_7-Ep0DK7B6NpwYw-jA0yhCyPzE-yTKhuEh1X6UFZxUACUr11dlB3YxMQgOEuEZl7msJ3gfnyU8FLxHLdcCYsHb0K-AT3o9Db2VyOumurvesuCXvx8_beh2IfIYUC6EcHObVWy3a7phjLIpyuIxXzcgxPOv9I5VMnNsaOig36DkGKjxOed_yvPWQnw6v9yYKa3r8fduYMAnMfLO-lYfWHPhOhNXK6LBffLcrKNZ79OSKv-n8TF7DoKGJXuyk90iLa_XnbMFhfA5BuqT3UwZMP1ThZQYe8IQGT14S8VAJnMxxtU7ItS-xr4sV5qQQKzeBzua7SjztnTcsQ","provider_name":"google","user_claims":[{"typ":"iss","val":"https:\/\/accounts.google.com"},{"typ":"azp","val":"549130843484-h69pqesk4nimk477gtfjvdlhcb2qen9i.apps.googleusercontent.com"},{"typ":"aud","val":"549130843484-h69pqesk4nimk477gtfjvdlhcb2qen9i.apps.googleusercontent.com"},{"typ":"http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/nameidentifier","val":"111734149814826025351"},{"typ":"http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/emailaddress","val":"shivganga3chs@gmail.com"},{"typ":"email_verified","val":"true"},{"typ":"at_hash","val":"97UkfepqTKbQgGe-DvetJQ"},{"typ":"name","val":"Shiv Ganga 3 CHS"},{"typ":"picture","val":"https:\/\/lh3.googleusercontent.com\/a\/ALm5wu3sVlqWQH4o1c0ITh-VBml9mI3z8LHAOlRwkKub=s96-c"},{"typ":"http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/givenname","val":"Shiv Ganga 3"},{"typ":"http:\/\/schemas.xmlsoap.org\/ws\/2005\/05\/identity\/claims\/surname","val":"CHS"},{"typ":"locale","val":"en"},{"typ":"iat","val":"1667035152"},{"typ":"exp","val":"1667038752"}],"user_id":"shivganga3chs@gmail.com"}]
+session = requests.get("https://riyaaz.azurewebsites.net/.auth/me")
+#session = requests.get("https://github.com/streamlit/streamlit/issues/798")
+st.write(session.content)
+#gsheetData.set_gsheet("Feedback",str(session.content.,'UTF-8'))
 #RaagaList = pd.read_csv("Data-RaagaList.csv")
 #SpeedList = pd.read_csv("Data-SpeedList.csv")
 #PitchList = pd.read_csv("Data-PitchList.csv")
