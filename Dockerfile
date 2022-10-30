@@ -21,7 +21,9 @@ RUN pip3 install streamlit-ext
 RUN pip3 install jinja2==3.0.1
 RUN apt install git -y
 RUN pip3 install gspread
-ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+RUN pip3 install requests
+RUN pip3 install azure-functions
+RUN echo 101
 RUN git clone https://github.com/mahendrachandrasekhar/Riyaaz.git
 RUN mkdir .config
 RUN cd .config
