@@ -2,7 +2,7 @@ from operator import mod
 from ssl import SSLSession
 import streamlit as st
 import streamlit_ext as ste
-import requests
+#import requests
 import gsheetData
 #import os
 #import pathlib
@@ -23,12 +23,12 @@ PitchList = gsheetData.get_gsheet("PitchList")
 InstrumentList = gsheetData.get_gsheet("InstrumentList")
 Message = gsheetData.get_gsheet("Message")
 
-req = requests.get("https://riyaaz.azurewebsites.net/.auth/me")
+#req = requests.get("https://riyaaz.azurewebsites.net/.auth/me")
 #session = requests.get("https://github.com/streamlit/streamlit/issues/798")
 #st.write(req.headers.getter('X-MS-CLIENT-PRINCIPAL-NAME'))
-async def writeContent():
-    st.write(req.content)
-writeContent()
+#async def writeContent():
+#    st.write(req.content)
+#writeContent()
 st.error(Message.get("Message")[0])
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Main", "Notations", "How To Use","Feedback","Instrument Samples"])

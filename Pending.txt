@@ -3,3 +3,6 @@
 2. User Feedback Page. Collect user feedback in the GSheet
 3. Log Users in the GSheet
 4. Move the Data Model to GSheet
+
+For Google Authentication...
+pip install google-auth-oauthlib==0.4.6
