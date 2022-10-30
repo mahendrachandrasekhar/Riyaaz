@@ -51,13 +51,12 @@ if runtime:
         remote_ip = request.remote_ip
         headers = request.headers
         try:
-            st.write('Welcome ' + request.headers['X-Ms-Client-Principal-Name'])
+            st.error('Welcome ' + request.headers['X-Ms-Client-Principal-Name'] +'. '+ Message.get("Message")[0])
             gsheetData.set_gsheet("ActivityLog",[str(currTime),request.headers['X-Ms-Client-Principal-Name']])
         except KeyError:
-            st.write("Not Logged in")
+            st.error("Not Logged in." +'. '+ Message.get("Message")[0])
             gsheetData.set_gsheet("ActivityLog",[str(currTime),request.headers['Sec-Websocket-Key']])
 
-st.error(Message.get("Message")[0])
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Main", "Notations", "How To Use","Feedback","Instrument Samples"])
 with tab1:
