@@ -2,13 +2,10 @@ from operator import mod
 from ssl import SSLSession
 import streamlit as st
 import streamlit_ext as ste
-import requests
 import gsheetData
 import pandas as pd
 from datetime import datetime
-import gc
-from streamlit.runtime.runtime import Runtime
-from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
+from streamlit.web.server.websocket_headers import _get_websocket_headers
 import mainRiyaaz
 
 st.set_page_config(page_title='Daily Riyaaz')
@@ -23,39 +20,13 @@ PitchList = gsheetData.get_gsheet("PitchList")
 InstrumentList = gsheetData.get_gsheet("InstrumentList")
 Message = gsheetData.get_gsheet("Message")
 
-##Hacks copied from https://github.com/streamlit/streamlit/issues/5166#issuecomment-1296178944
-def st_runtime():
-
-    global _st_runtime
-
-    if _st_runtime:
-        return _st_runtime
-
-    for obj in gc.get_objects():
-        if type(obj) is Runtime:
-            _st_runtime = obj
-            return _st_runtime
-_st_runtime = None
-def session_id():
-
-    script_run_ctx = get_script_run_ctx()
-    return script_run_ctx.session_id if script_run_ctx else ''
-runtime = st_runtime()
-
-if runtime:
-    session_info = runtime._get_session_info(session_id())
-
-    if session_info:
-        request = getattr(session_info.client, 'request')
-        host_name = request.host_name
-        remote_ip = request.remote_ip
-        headers = request.headers
-        try:
-            st.error('Welcome ' + request.headers['X-Ms-Client-Principal-Name'] +'. '+ Message.get("Message")[0])
-            gsheetData.set_gsheet("ActivityLog",[str(currTime),request.headers['X-Ms-Client-Principal-Name']])
-        except KeyError:
-            st.error("Not Logged in." +'. '+ Message.get("Message")[0])
-            gsheetData.set_gsheet("ActivityLog",[str(currTime),request.headers['Sec-Websocket-Key']])
+headers = _get_websocket_headers()
+try:
+    st.error('Welcome ' + headers.get('X-Ms-Client-Principal-Name') +'. '+ Message.get("Message")[0])
+    gsheetData.set_gsheet("ActivityLog",[str(currTime),headers.get('X-Ms-Client-Principal-Name')])
+except (KeyError, TypeError):
+    st.error("Not Logged in." +'. '+ Message.get("Message")[0])
+    gsheetData.set_gsheet("ActivityLog",[str(currTime),headers.get('Sec-Websocket-Key')])
 
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Main", "Notations", "How To Use","Feedback","Instrument Samples"])
