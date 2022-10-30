@@ -4,12 +4,9 @@ import streamlit as st
 import streamlit_ext as ste
 import requests
 import gsheetData
-import gc
-#import pathlib
-from streamlit.runtime.scriptrunner import get_script_run_ctx
-from streamlit.web.server.browser_websocket_handler import BrowserWebSocketHandler
 import pandas as pd
 from datetime import datetime
+import gc
 from streamlit.runtime.runtime import Runtime
 from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
 import mainRiyaaz
@@ -26,6 +23,7 @@ PitchList = gsheetData.get_gsheet("PitchList")
 InstrumentList = gsheetData.get_gsheet("InstrumentList")
 Message = gsheetData.get_gsheet("Message")
 
+##Hacks copied from https://github.com/streamlit/streamlit/issues/5166#issuecomment-1296178944
 def st_runtime():
 
     global _st_runtime
@@ -52,20 +50,13 @@ if runtime:
         host_name = request.host_name
         remote_ip = request.remote_ip
         headers = request.headers
-        st.write(request.headers)
-#req = requests.get("https://riyaaz.azurewebsites.net/.auth/me")
-#session = requests.get("https://github.com/streamlit/streamlit/issues/798")
-#st.write(req.headers.getter('X-MS-CLIENT-PRINCIPAL-NAME'))
-#async def writeContent():
+        try:
+            st.write('Welcome ' + request.headers['X-Ms-Client-Principal-Name'])
+            gsheetData.set_gsheet("ActivityLog",[str(currTime),request.headers['X-Ms-Client-Principal-Name']])
+        except KeyError:
+            st.write("Not Logged in")
+            gsheetData.set_gsheet("ActivityLog",[str(currTime),request.headers['Sec-Websocket-Key']])
 
-# ctx = get_script_run_ctx()
-# session_client = runtime.get_instance().get_client(ctx.session_id)
-#session_info = server._get_session_info(session_id)
-#headers = session_info.ws.request.headers
-
-#st.write(requests.headers.get('X-MS-CLIENT-PRINCIPAL-NAME'))
-#st.write(headers)
-#writeContent()
 st.error(Message.get("Message")[0])
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["Main", "Notations", "How To Use","Feedback","Instrument Samples"])

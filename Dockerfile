@@ -23,7 +23,7 @@ RUN apt install git -y
 RUN pip3 install gspread
 RUN pip3 install requests
 RUN pip3 install azure-functions
-RUN echo 106
+RUN echo 108
 RUN git clone https://github.com/mahendrachandrasekhar/Riyaaz.git
 RUN mkdir .config
 RUN cd .config
