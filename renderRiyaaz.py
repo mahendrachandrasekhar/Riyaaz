@@ -2,13 +2,16 @@ from operator import mod
 from ssl import SSLSession
 import streamlit as st
 import streamlit_ext as ste
-#import requests
+import requests
 import gsheetData
-#import os
+import gc
 #import pathlib
-
+from streamlit.runtime.scriptrunner import get_script_run_ctx
+from streamlit.web.server.browser_websocket_handler import BrowserWebSocketHandler
 import pandas as pd
 from datetime import datetime
+from streamlit.runtime.runtime import Runtime
+from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
 import mainRiyaaz
 
 st.set_page_config(page_title='Daily Riyaaz')
@@ -23,11 +26,45 @@ PitchList = gsheetData.get_gsheet("PitchList")
 InstrumentList = gsheetData.get_gsheet("InstrumentList")
 Message = gsheetData.get_gsheet("Message")
 
+def st_runtime():
+
+    global _st_runtime
+
+    if _st_runtime:
+        return _st_runtime
+
+    for obj in gc.get_objects():
+        if type(obj) is Runtime:
+            _st_runtime = obj
+            return _st_runtime
+_st_runtime = None
+def session_id():
+
+    script_run_ctx = get_script_run_ctx()
+    return script_run_ctx.session_id if script_run_ctx else ''
+runtime = st_runtime()
+
+if runtime:
+    session_info = runtime._get_session_info(session_id())
+
+    if session_info:
+        request = getattr(session_info.client, 'request')
+        host_name = request.host_name
+        remote_ip = request.remote_ip
+        headers = request.headers
+        st.write(request.headers)
 #req = requests.get("https://riyaaz.azurewebsites.net/.auth/me")
 #session = requests.get("https://github.com/streamlit/streamlit/issues/798")
 #st.write(req.headers.getter('X-MS-CLIENT-PRINCIPAL-NAME'))
 #async def writeContent():
-#    st.write(req.content)
+
+# ctx = get_script_run_ctx()
+# session_client = runtime.get_instance().get_client(ctx.session_id)
+#session_info = server._get_session_info(session_id)
+#headers = session_info.ws.request.headers
+
+#st.write(requests.headers.get('X-MS-CLIENT-PRINCIPAL-NAME'))
+#st.write(headers)
 #writeContent()
 st.error(Message.get("Message")[0])
 outFileSuffix = currTime.strftime("%Y%m%d%w%H%M%S%f")
