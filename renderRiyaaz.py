@@ -9,7 +9,7 @@ from streamlit.web.server.websocket_headers import _get_websocket_headers
 import mainRiyaaz
 
 st.set_page_config(page_title='Daily Riyaaz')
-st.image("Riyaaz.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
+st.image("Banner.png", caption=None, width=500, use_column_width=True, clamp=False, channels="RGB", output_format="auto")
 
 instrument = ""
 currTime = datetime.now()

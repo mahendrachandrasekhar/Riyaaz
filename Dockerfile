@@ -19,9 +19,10 @@ RUN strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so
 RUN pip3 install streamlit==1.14
 RUN pip3 install streamlit-ext==0.1.4
 RUN pip3 install jinja2==3.0.1
-RUN pip3 install gspread==3.1.0
 RUN apt install git -y
-RUN echo 110
+RUN pip3 install gspread==3.1.0
+RUN pip3 install google-auth==2.12.0
+RUN echo 109
 RUN git clone https://github.com/mahendrachandrasekhar/Riyaaz.git
 RUN mkdir .config
 RUN cd .config
