@@ -22,7 +22,7 @@ RUN pip3 install jinja2==3.0.1
 RUN apt install git -y
 RUN pip3 install gspread==3.1.0
 RUN pip3 install google-auth==2.12.0
-RUN echo 109
+RUN echo 110
 RUN git clone https://github.com/mahendrachandrasekhar/Riyaaz.git
 RUN mkdir .config
 RUN cd .config

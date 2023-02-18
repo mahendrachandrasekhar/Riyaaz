@@ -97,6 +97,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
         AarohLength = getAarohAvarohLen(CurrentRaag, "Aaroh")
         AvarohLength = getAarohAvarohLen(CurrentRaag, "Avaroh")
 
+        fouttxt.write("Raag "+ inputRaag+"\n")
+
         ##########################################
         simplePatternCnt = 0
         for simplePattern in [includeAarohAvaroh, includeBasicPattern2]:
@@ -117,6 +119,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                                 strToPrefix = ""
                             # Pattern type 1-- BEGIN - Aaroh (SS,SR, SG...)
                             if simplePatternCnt == 1:
+                                if direction == 'Aaroh':
+                                    txtstr = 'Palta#:'+str(1)+'\n'
                                 firstNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == 1) & (
                                     CurrentRaag['Aaroh_Avaroh'] == direction)])['LyricalNote']).to_string(index=False).strip()
                                 firstXML = RaagaTable.loc[(RaagaTable['LyricalNote'] == firstNote) & (
@@ -191,16 +195,23 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
         if includeBasicPaltas:
             #BasicPaltaList = pd.read_csv("Data-ListOfBasicPaltas.csv")
             BasicPaltaList = gsheetData.get_gsheet("ListOfBasicPaltas")
+            currPaltaCount = 1
+            printedPalta = True
             for palta in BasicPaltaList['PatlaNotation']:
+                if printedPalta:
+                    currPaltaCount+=1
+                printedPalta = False
                 Pattern = str(palta)
                 patternLen = len(Pattern)
 
+                txtstr = 'Palta#:'+str(currPaltaCount)+'\n'
                 for direction in ["Aaroh", "Avaroh"]:
                     directionlen = getAarohAvarohLen(CurrentRaag, direction)
                     if not True in [int(i) > directionlen for i in Pattern]:
                         fileOperations.startMeasure(
                             fout, 'PATTERN:'+Pattern+' - ' + direction, MeasureNumber, speed)
                         MeasureNumber += 1
+                        fout.write("<note><duration>1</duration><type>"+speed+"</type></note>")
                         for a in range(directionlen):
 
                             # Loop through pattern
@@ -237,6 +248,7 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                                 printList.append(finalStrToWrite)
 
                             if printPattern:
+                                printedPalta = True
                                 for pl in printList:
                                     fout.write(pl)
                                     fout.write('\n')
@@ -260,6 +272,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
 
         if includePaltas:
             try:
+                currPaltaCount = 1
+                printedPalta = True
                 if includeLibraryPaltas:
                     #PaltaList1 = pd.read_csv("Data-ListOfPaltas.csv")
                     PaltaList1 = gsheetData.get_gsheet("ListOfPaltas")
@@ -280,6 +294,10 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                 print(PaltaList)
 
                 for palta in PaltaList['PatlaNotation']:
+                    if printedPalta:
+                        currPaltaCount+=1
+                    printedPalta = False
+                    txtstr = 'Palta#:'+str(currPaltaCount)+'\n'
                     Pattern = str(palta)
 
                     for direction in ["Aaroh", "Avaroh"]:
@@ -288,6 +306,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                         fileOperations.startMeasure(
                             fout, 'PATTERN:'+Pattern+' - ' + direction, MeasureNumber, speed)
                         MeasureNumber += 1
+                        for i in range(4):
+                            fout.write("<note><duration>1</duration><type>"+speed+"</type></note>")
                         for a in range(directionlen):
 
                             # Loop through pattern
@@ -331,6 +351,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                                 fileOperations.writeEmptyNote(
                                     fout, RaagaTable, speed)
 
+                            printedPalta = True
+
                         txtstr = fileOperations.endMeasure(
                             fout, fouttxt, txtstr)
 
@@ -353,6 +375,8 @@ def run(inputPitch, outFileSuffix, speed, inputRaag, includeLibraryPaltas, input
                 for currList in directionList:
                     currCount = 0
                     cycleCount = 0
+                    for i in range(4):
+                        fout.write("<note><duration>1</duration><type>"+speed+"</type></note>")
                     for currPattern in currList:
                         currCount += 1
                         CurrentNote = ((CurrentRaag.loc[(CurrentRaag['Sequence'] == currPattern) & (
